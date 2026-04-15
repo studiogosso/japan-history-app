@@ -1,0 +1,16 @@
+{
+  "name": "日本史 - Japanese History",
+  "short_name": "日本史",
+  "description": "Comprehensive Japanese history learning app with timeline, quiz, and glossary",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#08081a",
+  "theme_color": "#08081a",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230a0a16' width='100' height='100' rx='20'/><text x='50' y='65' text-anchor='middle' font-size='50'>🏯</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

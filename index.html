@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>日本史 - Japanese History</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#08081a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#08081a;--bg2:#0e0e26;--bg3:#161640;--accent:#ff6348;--accent2:#ff8566;--gold:#e6b422;--text:#eae8e5;--text2:#9896a1;--text3:#6b6980;--card:rgba(20,20,52,.55);--card2:rgba(30,30,68,.5);--border:rgba(60,60,120,.35);--success:#4ecdc4;--danger:#ff6b6b;--info:#45b7d1;--purple:#a855f7;--radius:14px;--shadow:0 8px 32px rgba(0,0,0,.45);--glass:rgba(18,18,48,.45);--glass-border:rgba(100,100,180,.18);--glass-blur:blur(18px)}
+html{scroll-behavior:smooth}
+body{font-family:"Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.7;background-image:radial-gradient(ellipse at 20% 0%,rgba(120,60,200,.1) 0%,transparent 50%),radial-gradient(ellipse at 80% 100%,rgba(255,99,72,.07) 0%,transparent 50%)}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+a{color:var(--accent);text-decoration:none}
+button{cursor:pointer;font-family:inherit;border:none;outline:none}
+input,select,textarea{font-family:inherit;outline:none}
+
+/* Header */
+.header{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--glass);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-bottom:1px solid var(--glass-border);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.header-title{font-size:1.3rem;font-weight:800;color:var(--accent);letter-spacing:.05em}
+.header-title span{color:var(--gold);font-size:.8rem;margin-left:6px;font-weight:400}
+.header-search{display:flex;align-items:center;gap:8px;background:rgba(26,26,62,.6);border:1px solid var(--glass-border);border-radius:10px;padding:4px 12px;width:260px;backdrop-filter:blur(8px)}
+.header-search input{background:none;border:none;color:var(--text);font-size:.85rem;width:100%}
+.header-search input::placeholder{color:var(--text3)}
+
+/* Nav */
+.nav{position:fixed;top:56px;left:0;right:0;z-index:99;background:var(--glass);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-bottom:1px solid var(--glass-border);display:flex;overflow-x:auto;gap:0;padding:0 8px;height:44px;align-items:center;-webkit-overflow-scrolling:touch}
+.nav::-webkit-scrollbar{height:0}
+.nav-btn{padding:8px 16px;font-size:.78rem;color:var(--text2);background:none;white-space:nowrap;border-bottom:2px solid transparent;transition:.2s;flex-shrink:0}
+.nav-btn:hover{color:var(--text)}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+
+/* Main */
+.main{padding-top:112px;min-height:100vh;max-width:1200px;margin:0 auto;padding-left:16px;padding-right:16px;padding-bottom:40px}
+
+/* Section titles */
+.section-title{font-size:1.5rem;font-weight:800;margin:32px 0 20px;color:var(--text);display:flex;align-items:center;gap:10px}
+.section-title::before{content:'';width:4px;height:28px;background:var(--accent);border-radius:2px}
+
+/* Cards grid */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+
+/* Era card */
+.era-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:.3s;position:relative;overflow:hidden}
+.era-card:hover{transform:translateY(-3px);box-shadow:var(--shadow),0 0 40px rgba(255,99,72,.06);border-color:rgba(255,99,72,.35)}
+.era-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--gold));opacity:0;transition:.3s}
+.era-card:hover::before{opacity:1}
+.era-card .era-period{font-size:.72rem;color:var(--accent);font-weight:600;letter-spacing:.08em;margin-bottom:4px}
+.era-card .era-name{font-size:1.2rem;font-weight:800;margin-bottom:6px}
+.era-card .era-subtitle{font-size:.8rem;color:var(--text2);margin-bottom:10px}
+.era-card .era-tags{display:flex;flex-wrap:wrap;gap:4px}
+.era-card .era-tag{font-size:.65rem;padding:2px 8px;background:rgba(22,22,64,.5);border-radius:10px;color:var(--text2);border:1px solid rgba(60,60,120,.2)}
+.era-card .bookmark-btn{position:absolute;top:12px;right:12px;background:none;color:var(--text3);font-size:1.1rem;transition:.2s;padding:4px}
+.era-card .bookmark-btn.active{color:var(--gold)}
+.era-card .bookmark-btn:hover{color:var(--gold)}
+
+/* Detail view */
+.detail-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.detail-overlay.open{display:flex}
+.detail-panel{background:rgba(12,12,30,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:18px;max-width:800px;width:100%;margin-top:40px;margin-bottom:40px;overflow:hidden;animation:slideUp .3s ease;box-shadow:0 16px 64px rgba(0,0,0,.5)}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+.detail-header{padding:28px 28px 20px;background:linear-gradient(135deg,rgba(18,18,42,.6),rgba(26,26,62,.6));border-bottom:1px solid var(--glass-border);position:relative}
+.detail-close{position:absolute;top:16px;right:16px;background:rgba(8,8,26,.7);border:1px solid var(--glass-border);color:var(--text2);width:36px;height:36px;border-radius:50%;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:.2s}
+.detail-close:hover{color:var(--accent);border-color:var(--accent)}
+.detail-header .era-label{font-size:.75rem;color:var(--accent);font-weight:600;letter-spacing:.1em}
+.detail-header h2{font-size:1.6rem;font-weight:800;margin:4px 0}
+.detail-header .era-period-full{color:var(--text2);font-size:.85rem}
+.detail-body{padding:24px 28px}
+.detail-section{margin-bottom:24px}
+.detail-section h3{font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--accent);display:flex;align-items:center;gap:8px}
+.detail-section h3::before{content:'';width:3px;height:16px;background:var(--accent);border-radius:2px}
+.detail-list{list-style:none}
+.detail-list li{padding:6px 0;border-bottom:1px solid var(--glass-border);font-size:.85rem;display:flex;gap:8px}
+.detail-list li:last-child{border-bottom:none}
+.detail-list .year{color:var(--gold);font-weight:600;min-width:60px;flex-shrink:0}
+.person-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.person-chip{background:rgba(30,30,68,.45);border:1px solid var(--glass-border);border-radius:10px;padding:10px;font-size:.8rem;cursor:pointer;transition:.2s;backdrop-filter:blur(6px)}
+.person-chip:hover{border-color:rgba(255,99,72,.35);background:rgba(26,26,62,.6)}
+.person-chip .name{font-weight:700;margin-bottom:2px}
+.person-chip .role{color:var(--text2);font-size:.72rem}
+.culture-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.culture-item{background:rgba(22,22,64,.4);border:1px solid var(--glass-border);border-radius:10px;padding:10px;font-size:.8rem}
+.culture-item .cat{color:var(--purple);font-size:.7rem;font-weight:600;margin-bottom:2px}
+
+/* Timeline */
+.timeline-wrap{position:relative;padding:20px 0 20px 40px}
+.timeline-line{position:absolute;left:18px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--gold),var(--accent))}
+.timeline-item{position:relative;margin-bottom:20px;padding:16px;background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-border);border-radius:var(--radius);transition:.25s;cursor:pointer}
+.timeline-item:hover{border-color:rgba(255,99,72,.35);transform:translateX(4px);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.timeline-item::before{content:'';position:absolute;left:-30px;top:20px;width:12px;height:12px;background:var(--accent);border-radius:50%;border:2px solid var(--bg)}
+.timeline-item .tl-year{font-size:.72rem;color:var(--gold);font-weight:700}
+.timeline-item .tl-title{font-size:.95rem;font-weight:700;margin:2px 0}
+.timeline-item .tl-desc{font-size:.78rem;color:var(--text2)}
+.timeline-item .tl-era{font-size:.65rem;color:var(--accent);background:rgba(22,22,64,.5);padding:2px 8px;border-radius:8px;display:inline-block;margin-top:4px;border:1px solid rgba(60,60,120,.2)}
+
+/* People grid */
+.people-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.people-card{background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:.25s}
+.people-card:hover{transform:translateY(-2px);border-color:rgba(255,99,72,.35);box-shadow:var(--shadow)}
+.people-card .p-era{font-size:.65rem;color:var(--accent);font-weight:600}
+.people-card .p-name{font-size:1.05rem;font-weight:800;margin:2px 0}
+.people-card .p-years{font-size:.72rem;color:var(--gold)}
+.people-card .p-role{font-size:.78rem;color:var(--text2);margin-top:4px}
+.people-card .p-desc{font-size:.75rem;color:var(--text3);margin-top:6px;line-height:1.5}
+
+/* Quiz */
+.quiz-container{max-width:640px;margin:0 auto}
+.quiz-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:28px;margin-bottom:20px}
+.quiz-progress{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.quiz-progress-bar{flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));transition:.3s;border-radius:3px}
+.quiz-progress-text{font-size:.75rem;color:var(--text2);min-width:60px;text-align:right}
+.quiz-question{font-size:1.05rem;font-weight:700;margin-bottom:20px;line-height:1.6}
+.quiz-options{display:flex;flex-direction:column;gap:10px}
+.quiz-option{padding:14px 18px;background:rgba(22,22,64,.5);border:1px solid var(--glass-border);border-radius:10px;font-size:.88rem;text-align:left;color:var(--text);transition:.2s}
+.quiz-option:hover:not(:disabled){border-color:rgba(255,99,72,.35);background:rgba(30,30,68,.6)}
+.quiz-option.correct{border-color:var(--success);background:rgba(78,205,196,.12);color:var(--success)}
+.quiz-option.wrong{border-color:var(--danger);background:rgba(255,107,107,.12);color:var(--danger)}
+.quiz-option:disabled{cursor:default}
+.quiz-explanation{margin-top:16px;padding:14px;background:rgba(14,14,38,.6);border:1px solid var(--glass-border);border-radius:10px;font-size:.82rem;color:var(--text2);line-height:1.6;display:none}
+.quiz-explanation.show{display:block}
+.quiz-next{margin-top:16px;padding:10px 28px;background:var(--accent);color:#fff;border-radius:8px;font-weight:600;font-size:.88rem;display:none;transition:.2s}
+.quiz-next.show{display:inline-block}
+.quiz-next:hover{background:var(--accent2)}
+.quiz-result{text-align:center;padding:40px 20px}
+.quiz-score{font-size:3rem;font-weight:800;color:var(--accent)}
+.quiz-score-label{font-size:1rem;color:var(--text2);margin-top:4px}
+.quiz-restart{margin-top:20px;padding:12px 32px;background:var(--accent);color:#fff;border-radius:8px;font-weight:600;font-size:.9rem}
+.quiz-restart:hover{background:var(--accent2)}
+.quiz-category-selector{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.quiz-cat-btn{padding:6px 14px;border-radius:8px;font-size:.78rem;background:rgba(22,22,64,.5);color:var(--text2);border:1px solid var(--glass-border);transition:.2s}
+.quiz-cat-btn:hover{border-color:rgba(255,99,72,.35)}
+.quiz-cat-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Glossary */
+.glossary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.glossary-item{background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:16px;transition:.2s}
+.glossary-item:hover{border-color:rgba(255,99,72,.35)}
+.glossary-item .g-term{font-size:1rem;font-weight:700;color:var(--accent)}
+.glossary-item .g-reading{font-size:.72rem;color:var(--gold);margin-bottom:4px}
+.glossary-item .g-def{font-size:.8rem;color:var(--text2);line-height:1.6}
+.glossary-item .g-era{font-size:.65rem;color:var(--text3);margin-top:6px}
+.glossary-filter{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.glossary-filter-btn{padding:5px 12px;border-radius:8px;font-size:.75rem;background:rgba(22,22,64,.5);color:var(--text2);border:1px solid var(--glass-border);transition:.2s}
+.glossary-filter-btn:hover{border-color:rgba(255,99,72,.35)}
+.glossary-filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Connections */
+.connections-wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.connection-card{background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:18px;transition:.2s}
+.connection-card:hover{border-color:rgba(168,85,247,.4);box-shadow:0 4px 20px rgba(168,85,247,.08)}
+.connection-card .c-title{font-size:.95rem;font-weight:700;margin-bottom:6px;color:var(--purple)}
+.connection-card .c-eras{font-size:.7rem;color:var(--gold);margin-bottom:8px}
+.connection-card .c-desc{font-size:.8rem;color:var(--text2);line-height:1.6}
+
+/* Compare */
+.compare-selector{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap;align-items:end}
+.compare-selector select{background:rgba(22,22,64,.6);border:1px solid var(--glass-border);color:var(--text);padding:10px 14px;border-radius:10px;font-size:.85rem;min-width:180px}
+.compare-selector label{font-size:.78rem;color:var(--text2);margin-bottom:4px;display:block}
+.compare-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.compare-table th{background:rgba(22,22,64,.5);padding:12px;text-align:left;color:var(--accent);font-weight:600;border-bottom:2px solid var(--accent)}
+.compare-table td{padding:12px;border-bottom:1px solid var(--glass-border);vertical-align:top}
+.compare-table tr:hover td{background:rgba(20,20,52,.4)}
+.compare-table .cat-label{color:var(--gold);font-weight:600;white-space:nowrap}
+
+/* Bookmarks */
+.bookmarks-empty{text-align:center;padding:60px 20px;color:var(--text3)}
+.bookmarks-empty .icon{font-size:2.5rem;margin-bottom:12px}
+
+/* Search results */
+.search-results{position:absolute;top:100%;left:0;right:0;background:rgba(14,14,38,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-border);border-radius:0 0 12px 12px;max-height:400px;overflow-y:auto;display:none;z-index:101}
+.search-results.open{display:block}
+.search-result-item{padding:10px 14px;border-bottom:1px solid var(--glass-border);cursor:pointer;transition:.15s;font-size:.82rem}
+.search-result-item:hover{background:rgba(26,26,62,.6)}
+.search-result-item .sr-type{font-size:.65rem;color:var(--accent);font-weight:600}
+.search-result-item .sr-title{font-weight:600}
+.search-result-item .sr-desc{color:var(--text2);font-size:.75rem}
+
+/* Stats bar */
+.stats-bar{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.stat-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:var(--radius);padding:16px 20px;flex:1;min-width:120px;text-align:center}
+.stat-card .stat-num{font-size:1.8rem;font-weight:800;color:var(--accent)}
+.stat-card .stat-label{font-size:.72rem;color:var(--text2);margin-top:2px}
+
+/* Filter chips */
+.filter-bar{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-chip{padding:5px 14px;border-radius:20px;font-size:.75rem;background:rgba(22,22,64,.5);color:var(--text2);border:1px solid var(--glass-border);transition:.2s;cursor:pointer}
+.filter-chip:hover{border-color:rgba(255,99,72,.35)}
+.filter-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Scroll to top */
+.scroll-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);color:var(--accent);font-size:1.2rem;display:flex;align-items:center;justify-content:center;z-index:90;opacity:0;pointer-events:none;transition:.3s;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.scroll-top.show{opacity:1;pointer-events:auto}
+.scroll-top:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Keyboard hint */
+.kbd-hint{position:fixed;bottom:24px;left:24px;font-size:.68rem;color:var(--text3);z-index:90;display:flex;gap:12px}
+.kbd-hint kbd{background:rgba(22,22,64,.6);border:1px solid var(--glass-border);border-radius:4px;padding:1px 6px;font-family:inherit;font-size:.65rem}
+
+/* Count badge */
+.view-count{font-size:.8rem;color:var(--text3);font-weight:400;margin-left:8px}
+
+/* Responsive */
+@media(max-width:768px){
+  .cards-grid{grid-template-columns:1fr}
+  .people-grid{grid-template-columns:1fr}
+  .glossary-grid{grid-template-columns:1fr}
+  .connections-wrap{grid-template-columns:1fr}
+  .header-search{width:140px;padding:3px 10px}
+  .header-search input{font-size:.8rem}
+  .header-title{font-size:1.1rem}
+  .header-title span{display:none}
+  .compare-selector{flex-direction:column;gap:10px}
+  .detail-panel{margin-top:10px;border-radius:14px 14px 0 0}
+  .detail-header{padding:20px 16px}
+  .detail-body{padding:16px}
+  .person-grid{grid-template-columns:1fr}
+  .culture-grid{grid-template-columns:1fr 1fr}
+  .stats-bar{gap:8px}
+  .stat-card{min-width:0;padding:12px 8px}
+  .stat-card .stat-num{font-size:1.4rem}
+  .section-title{font-size:1.2rem;margin:24px 0 16px}
+  .nav-btn{padding:8px 12px;font-size:.74rem}
+  .scroll-top{bottom:16px;right:16px;width:40px;height:40px}
+  .kbd-hint{display:none}
+  .compare-table{font-size:.75rem}
+  .compare-table th,.compare-table td{padding:8px 6px}
+}
+@media(max-width:400px){
+  .header{padding:0 12px}
+  .main{padding-left:10px;padding-right:10px}
+  .culture-grid{grid-template-columns:1fr}
+}
+
+/* View transition */
+.view{display:none}
+.view.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* Tab indicator animation */
+.tab-indicator{position:absolute;bottom:0;height:2px;background:var(--accent);transition:.3s ease}
+
+/* Tooltip */
+.tooltip{position:relative}
+.tooltip::after{content:attr(data-tip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:rgba(22,22,64,.85);backdrop-filter:blur(8px);color:var(--text);font-size:.7rem;padding:4px 10px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:.2s;border:1px solid var(--glass-border)}
+.tooltip:hover::after{opacity:1}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-title">日本史<span>Japanese History</span></div>
+  <div class="header-search" style="position:relative">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6980" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <input type="text" id="globalSearch" placeholder="検索... (人物・事件・用語)">
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</header>
+
+<nav class="nav" id="mainNav">
+  <button class="nav-btn active" data-view="home">概要</button>
+  <button class="nav-btn" data-view="timeline">年表</button>
+  <button class="nav-btn" data-view="eras">時代</button>
+  <button class="nav-btn" data-view="people">人物</button>
+  <button class="nav-btn" data-view="connections">関連</button>
+  <button class="nav-btn" data-view="quiz">クイズ</button>
+  <button class="nav-btn" data-view="glossary">用語集</button>
+  <button class="nav-btn" data-view="compare">時代比較</button>
+  <button class="nav-btn" data-view="bookmarks">ブックマーク</button>
+</nav>
+
+<main class="main">
+  <!-- HOME -->
+  <div class="view active" id="view-home">
+    <div class="stats-bar">
+      <div class="stat-card"><div class="stat-num">12</div><div class="stat-label">時代</div></div>
+      <div class="stat-card"><div class="stat-num" id="statPeople">0</div><div class="stat-label">歴史人物</div></div>
+      <div class="stat-card"><div class="stat-num" id="statEvents">0</div><div class="stat-label">主要事件</div></div>
+      <div class="stat-card"><div class="stat-num" id="statTerms">0</div><div class="stat-label">用語</div></div>
+    </div>
+    <h2 class="section-title">時代一覧</h2>
+    <div class="cards-grid" id="homeEraGrid"></div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="view" id="view-timeline">
+    <h2 class="section-title">日本史年表<span class="view-count" id="timelineCount"></span></h2>
+    <div class="filter-bar" id="timelineFilters"></div>
+    <div class="timeline-wrap" id="timelineWrap"></div>
+  </div>
+
+  <!-- ERAS -->
+  <div class="view" id="view-eras">
+    <h2 class="section-title">時代詳細</h2>
+    <div class="cards-grid" id="eraGrid"></div>
+  </div>
+
+  <!-- PEOPLE -->
+  <div class="view" id="view-people">
+    <h2 class="section-title">歴史人物<span class="view-count" id="peopleCount"></span></h2>
+    <div class="filter-bar" id="peopleFilters"></div>
+    <div class="people-grid" id="peopleGrid"></div>
+  </div>
+
+  <!-- CONNECTIONS -->
+  <div class="view" id="view-connections">
+    <h2 class="section-title">時代間の関連</h2>
+    <div class="connections-wrap" id="connectionsGrid"></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="view" id="view-quiz">
+    <h2 class="section-title">歴史クイズ</h2>
+    <div class="quiz-category-selector" id="quizCats"></div>
+    <div class="quiz-container" id="quizContainer"></div>
+  </div>
+
+  <!-- GLOSSARY -->
+  <div class="view" id="view-glossary">
+    <h2 class="section-title">用語集<span class="view-count" id="glossaryCount"></span></h2>
+    <div class="glossary-filter" id="glossaryFilter"></div>
+    <div class="glossary-grid" id="glossaryGrid"></div>
+  </div>
+
+  <!-- COMPARE -->
+  <div class="view" id="view-compare">
+    <h2 class="section-title">時代比較</h2>
+    <div class="compare-selector">
+      <div><label>時代A</label><select id="compareA"></select></div>
+      <div><label>時代B</label><select id="compareB"></select></div>
+      <button onclick="renderCompare()" style="padding:10px 20px;background:var(--accent);color:#fff;border-radius:8px;font-weight:600;font-size:.85rem;height:40px">比較する</button>
+    </div>
+    <div id="compareResult"></div>
+  </div>
+
+  <!-- BOOKMARKS -->
+  <div class="view" id="view-bookmarks">
+    <h2 class="section-title">ブックマーク</h2>
+    <div id="bookmarksContent"></div>
+  </div>
+</main>
+
+<!-- Detail overlay -->
+<div class="detail-overlay" id="detailOverlay">
+  <div class="detail-panel" id="detailPanel"></div>
+</div>
+
+<!-- Scroll to top -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="ページトップへ">&#9650;</button>
+
+<!-- Keyboard hints (desktop) -->
+<div class="kbd-hint"><span><kbd>/</kbd> 検索</span><span><kbd>Esc</kbd> 閉じる</span></div>
+
+<script>
+// ===== DATA =====
+const ERAS = [
+  {
+    id:"jomon",name:"縄文・弥生時代",period:"〜300年",years:[-10000,300],
+    subtitle:"狩猟採集から稲作社会へ",
+    politics:"部族社会 → 小国家連合。縄文時代は狩猟採集中心の平等社会。弥生時代に稲作伝来により階層社会が形成。邪馬台国が有力な政治連合として出現。",
+    economy:"縄文：狩猟・採集・漁労。弥生：水稲農耕の開始により余剰生産が生まれ、富の集中と社会の階層化が進行。鉄器・青銅器の使用開始。",
+    foreign:"大陸（朝鮮半島・中国）からの渡来人が稲作・金属器・機織りなどの技術を伝播。魏志倭人伝に邪馬台国の記述。卑弥呼が魏に朝貢。",
+    culture:[
+      {cat:"工芸",name:"縄文土器",desc:"世界最古級の土器。火焔型土器など装飾的"},
+      {cat:"工芸",name:"弥生土器",desc:"実用的で薄手。稲作文化を反映"},
+      {cat:"信仰",name:"アニミズム",desc:"自然崇拝、精霊信仰が社会の基盤"},
+      {cat:"遺跡",name:"三内丸山遺跡",desc:"大規模縄文集落。高度な定住生活"},
+      {cat:"遺跡",name:"吉野ヶ里遺跡",desc:"弥生時代の環濠集落。防御施設完備"},
+      {cat:"道具",name:"銅鐸・銅剣",desc:"祭祀用青銅器。権威の象徴"}
+    ],
+    events:[
+      {year:"前1万年頃",title:"縄文時代開始",desc:"最終氷期の終了とともに狩猟採集社会が成立"},
+      {year:"前3世紀頃",title:"稲作伝来",desc:"北九州に水稲農耕が伝わり、弥生文化が始まる"},
+      {year:"前1世紀",title:"百余国の成立",desc:"漢書地理志に「倭人は百余国に分かれる」と記述"},
+      {year:"57年",title:"金印授受",desc:"奴国王が後漢に朝貢し、「漢委奴国王」の金印を受ける"},
+      {year:"239年",title:"卑弥呼の朝貢",desc:"邪馬台国の女王卑弥呼が魏に使者を送り、「親魏倭王」の称号を得る"},
+      {year:"3世紀後半",title:"邪馬台国滅亡",desc:"卑弥呼の死後、内乱を経て台与が即位。その後の消息は不明"}
+    ],
+    people:[
+      {name:"卑弥呼",years:"?-248頃",role:"邪馬台国女王",desc:"鬼道（シャーマニズム）で国を治めた。魏に朝貢し金印を受ける。約30国を統率。"},
+      {name:"台与",years:"235頃-?",role:"邪馬台国女王",desc:"卑弥呼の死後の内乱を収め、13歳で女王に擁立された。"},
+      {name:"帥升",years:"?-?",role:"倭国王",desc:"107年に後漢の安帝に朝貢した倭国王。記録に残る最初の倭の指導者。"},
+      {name:"素戔嗚尊",years:"神話",role:"神話の神",desc:"日本神話の重要な神。八岐大蛇退治の伝承。出雲との関連が深い。"},
+      {name:"天照大神",years:"神話",role:"太陽神",desc:"皇室の祖神とされる。伊勢神宮の主祭神。日本神話の最高神。"}
+    ],
+    tags:["狩猟採集","稲作","邪馬台国","卑弥呼","縄文土器","弥生土器"]
+  },
+  {
+    id:"kofun",name:"古墳・飛鳥時代",period:"300-710年",years:[300,710],
+    subtitle:"大和政権の成立と律令国家への道",
+    politics:"大和政権（ヤマト王権）が統一政権を形成。氏姓制度による豪族連合。聖徳太子の冠位十二階・十七条憲法。大化の改新で中央集権化。律令制度の導入。",
+    economy:"屯倉（皇室直轄地）と田荘（豪族私有地）の二元構造。班田収授法による土地国有化。租庸調の税制。渡来人による先進技術導入。",
+    foreign:"百済・新羅・高句麗との密接な交流。仏教伝来（538/552年）。遣隋使・遣唐使派遣。白村江の戦い（663年）で百済滅亡後、大陸との関係再編。",
+    culture:[
+      {cat:"建築",name:"法隆寺",desc:"世界最古の木造建築群。飛鳥文化の代表"},
+      {cat:"仏教",name:"仏教伝来",desc:"百済から伝わり、日本文化の根幹を形成"},
+      {cat:"芸術",name:"飛鳥文化",desc:"大陸の影響を受けた日本初の仏教文化"},
+      {cat:"工芸",name:"埴輪",desc:"古墳に配置された素焼きの土器。人物・動物・家などの形"},
+      {cat:"建築",name:"古墳",desc:"前方後円墳など巨大な墳墓。大王の権威を示す"},
+      {cat:"文学",name:"万葉仮名",desc:"漢字を日本語の音に当てた表記法の発展"}
+    ],
+    events:[
+      {year:"350頃",title:"大和政権の統一",desc:"畿内を中心に各地の豪族を統合し、統一政権を形成"},
+      {year:"538年",title:"仏教伝来",desc:"百済の聖明王から欽明天皇に仏像・経典が贈られる"},
+      {year:"593年",title:"聖徳太子摂政",desc:"推古天皇の摂政として政治改革に着手"},
+      {year:"603年",title:"冠位十二階制定",desc:"家柄ではなく個人の才能・功績で位を授ける制度"},
+      {year:"604年",title:"十七条憲法",desc:"官僚・豪族のための道徳的・政治的規範を制定"},
+      {year:"607年",title:"遣隋使派遣",desc:"小野妹子を隋に派遣。「日出処の天子」の国書"},
+      {year:"645年",title:"大化の改新",desc:"中大兄皇子と中臣鎌足が蘇我氏を滅ぼし、中央集権改革開始"},
+      {year:"663年",title:"白村江の戦い",desc:"百済復興を支援して唐・新羅連合軍と戦い大敗"},
+      {year:"672年",title:"壬申の乱",desc:"天武天皇が大友皇子を破り即位。天皇権力の強化"},
+      {year:"701年",title:"大宝律令",desc:"唐の律令を参考に日本初の体系的法典を完成"}
+    ],
+    people:[
+      {name:"聖徳太子",years:"574-622",role:"摂政・政治家",desc:"推古天皇の摂政。冠位十二階、十七条憲法を制定。仏教を保護し法隆寺を建立。"},
+      {name:"推古天皇",years:"554-628",role:"第33代天皇",desc:"日本初の女帝。聖徳太子を摂政に任じ、仏教保護と隋との外交を推進。"},
+      {name:"中大兄皇子",years:"626-672",role:"天智天皇",desc:"大化の改新の中心人物。蘇我氏を倒し中央集権国家建設を推進。後の天智天皇。"},
+      {name:"中臣鎌足",years:"614-669",role:"政治家",desc:"中大兄皇子と共に大化の改新を実行。藤原氏の始祖。死の直前に藤原姓を賜る。"},
+      {name:"天武天皇",years:"?-686",role:"第40代天皇",desc:"壬申の乱で即位。天皇権力を強化し、律令国家体制の基礎を築いた。"},
+      {name:"蘇我馬子",years:"551-626",role:"大臣",desc:"蘇我氏全盛期の大臣。仏教導入を推進。政治的実権を握り天皇をも凌ぐ権勢。"},
+      {name:"小野妹子",years:"?-?",role:"外交官",desc:"607年に遣隋使として隋に渡る。「日出処の天子」の国書を持参。"}
+    ],
+    tags:["大和政権","聖徳太子","大化の改新","律令制","仏教伝来","法隆寺"]
+  },
+  {
+    id:"nara",name:"奈良時代",period:"710-794年",years:[710,794],
+    subtitle:"律令国家の完成と天平文化",
+    politics:"平城京遷都により本格的律令国家が成立。天皇を頂点とする官僚制。藤原氏の台頭。聖武天皇の仏教政治。道鏡事件など僧侶の政治介入も。",
+    economy:"班田収授法による公地公民制。墾田永年私財法（743年）が荘園制度の端緒。正倉院宝物に見るシルクロード交易。",
+    foreign:"遣唐使の継続的派遣。唐文化の積極的吸収。鑑真の来日。新羅・渤海との外交。天平文化は国際色豊か。",
+    culture:[
+      {cat:"建築",name:"東大寺",desc:"聖武天皇発願の大仏殿。奈良の大仏（盧舎那仏）"},
+      {cat:"文学",name:"万葉集",desc:"日本最古の歌集。約4500首。天皇から庶民まで"},
+      {cat:"文学",name:"古事記・日本書紀",desc:"日本の神話・歴史を体系化した最古の文献"},
+      {cat:"芸術",name:"天平文化",desc:"唐の影響を受けた国際色豊かな貴族文化"},
+      {cat:"建築",name:"正倉院",desc:"シルクロードの終着点。国際交易品を多数収蔵"},
+      {cat:"仏教",name:"南都六宗",desc:"奈良仏教の六つの学派。学問仏教の中心"}
+    ],
+    events:[
+      {year:"710年",title:"平城京遷都",desc:"唐の長安を模した都を奈良に建設。律令国家の中心"},
+      {year:"712年",title:"古事記編纂",desc:"太安万侶が稗田阿礼の口述を記録。日本最古の歴史書"},
+      {year:"720年",title:"日本書紀完成",desc:"舎人親王らが編纂。日本初の正史。30巻"},
+      {year:"741年",title:"国分寺建立の詔",desc:"聖武天皇が全国に国分寺・国分尼寺の建立を命じる"},
+      {year:"743年",title:"墾田永年私財法",desc:"開墾した土地の永久私有を認める。荘園制の出発点"},
+      {year:"752年",title:"東大寺大仏開眼",desc:"盧舎那仏の開眼供養。インドの僧侶も参列する国際的行事"},
+      {year:"753年",title:"鑑真来日",desc:"6度の渡航を経て来日。唐招提寺を建立し戒律を伝える"},
+      {year:"770年",title:"道鏡事件",desc:"僧侶道鏡が皇位を狙うが、和気清麻呂の奏上により阻止"}
+    ],
+    people:[
+      {name:"聖武天皇",years:"701-756",role:"第45代天皇",desc:"仏教による国家鎮護を志し、東大寺・国分寺を建立。天平文化の保護者。"},
+      {name:"光明皇后",years:"701-760",role:"皇后",desc:"聖武天皇の后。藤原氏出身初の皇后。仏教を篤く信仰し、施薬院・悲田院を設置。"},
+      {name:"鑑真",years:"688-763",role:"唐僧",desc:"5度の渡航失敗と失明を経て来日。唐招提寺を建立し日本の仏教戒律を確立。"},
+      {name:"行基",years:"668-749",role:"僧侶",desc:"民衆への布教と社会事業（橋・道路・灌漑）で「行基菩薩」と呼ばれた。東大寺建立に協力。"},
+      {name:"大伴家持",years:"718-785",role:"歌人・政治家",desc:"万葉集の編纂者とされる。約470首が収録。奈良時代を代表する歌人。"},
+      {name:"藤原不比等",years:"659-720",role:"政治家",desc:"藤原鎌足の子。大宝律令の制定に関与。藤原氏の権力基盤を確立。"}
+    ],
+    tags:["平城京","東大寺","万葉集","天平文化","聖武天皇","鑑真"]
+  },
+  {
+    id:"heian",name:"平安時代",period:"794-1185年",years:[794,1185],
+    subtitle:"貴族文化の開花と武士の台頭",
+    politics:"桓武天皇による平安京遷都。藤原氏の摂関政治が全盛。白河上皇以降は院政。保元・平治の乱を経て平清盛が武家政権の先駆けに。",
+    economy:"荘園制の発達。受領による地方支配。貨幣経済の発展。日宋貿易の開始（平清盛）。年貢・公事・夫役の負担体系。",
+    foreign:"遣唐使の廃止（894年）後、国風文化が発展。日宋貿易で大陸との交易は継続。高麗との関係。刀伊の入寇（1019年）。",
+    culture:[
+      {cat:"文学",name:"源氏物語",desc:"紫式部作。世界最古の長編小説。宮廷生活を描く"},
+      {cat:"文学",name:"枕草子",desc:"清少納言作。日本初の随筆。鋭い観察眼と美意識"},
+      {cat:"文字",name:"仮名文字",desc:"ひらがな・カタカナの発明。日本独自の表現の確立"},
+      {cat:"芸術",name:"国風文化",desc:"唐風を消化し日本独自の美意識を確立した文化"},
+      {cat:"建築",name:"平等院鳳凰堂",desc:"藤原頼通建立。極楽浄土を具現化した阿弥陀堂"},
+      {cat:"信仰",name:"浄土信仰",desc:"末法思想の広まりにより阿弥陀仏への信仰が拡大"},
+      {cat:"芸術",name:"大和絵",desc:"日本の風景・物語を題材にした絵画様式"},
+      {cat:"音楽",name:"雅楽",desc:"宮廷音楽として洗練。現在も伝承される世界最古の管弦楽"}
+    ],
+    events:[
+      {year:"794年",title:"平安京遷都",desc:"桓武天皇が長岡京から京都へ遷都。以後約400年の都"},
+      {year:"894年",title:"遣唐使廃止",desc:"菅原道真の建議により遣唐使を停止。国風文化発展の契機"},
+      {year:"1016年",title:"藤原道長の摂政",desc:"「此の世をば我が世とぞ思ふ」と詠んだ摂関政治の最盛期"},
+      {year:"1051年",title:"前九年の役",desc:"奥州の安倍氏との戦い。源頼義・義家の活躍で武家の名声向上"},
+      {year:"1086年",title:"院政開始",desc:"白河上皇が天皇を退位後も政治の実権を握る体制を確立"},
+      {year:"1156年",title:"保元の乱",desc:"天皇家・藤原氏の内紛に武士が介入。武士の政治的地位向上"},
+      {year:"1159年",title:"平治の乱",desc:"平清盛が源義朝を破り、武家として初めて政権の中枢に"},
+      {year:"1167年",title:"平清盛太政大臣",desc:"武士として初の太政大臣就任。平氏全盛期"},
+      {year:"1180年",title:"源平合戦開始",desc:"源頼朝挙兵。以後5年間の源平の争い（治承・寿永の乱）"},
+      {year:"1185年",title:"壇ノ浦の戦い",desc:"源義経が平氏を滅ぼす。武家政権の時代へ"}
+    ],
+    people:[
+      {name:"桓武天皇",years:"737-806",role:"第50代天皇",desc:"平安京に遷都。蝦夷征討のため坂上田村麻呂を征夷大将軍に任命。律令制の再建に尽力。"},
+      {name:"藤原道長",years:"966-1028",role:"摂政・太政大臣",desc:"摂関政治の最盛期を築く。4人の娘を天皇の后に。「望月の歌」で知られる。"},
+      {name:"紫式部",years:"973頃-1014頃",role:"作家・歌人",desc:"源氏物語の作者。一条天皇の中宮彰子に仕えた。世界文学史上の最重要作家の一人。"},
+      {name:"清少納言",years:"966頃-1025頃",role:"作家・歌人",desc:"枕草子の作者。一条天皇の中宮定子に仕えた。鋭い観察眼と機知に富む文筆。"},
+      {name:"菅原道真",years:"845-903",role:"学者・政治家",desc:"右大臣まで昇進するも藤原氏により大宰府に左遷。死後、天神として信仰される。"},
+      {name:"平清盛",years:"1118-1181",role:"太政大臣",desc:"武士として初の太政大臣。日宋貿易を推進。平氏一門の全盛期を築くが驕りが滅亡の原因に。"},
+      {name:"源義経",years:"1159-1189",role:"武将",desc:"源平合戦の英雄。一ノ谷・屋島・壇ノ浦で平氏を破る。兄頼朝との確執で悲劇的な最期。"},
+      {name:"藤原頼通",years:"992-1074",role:"関白",desc:"道長の子。約50年間関白を務める。平等院鳳凰堂を建立。摂関政治の衰退期の始まり。"}
+    ],
+    tags:["平安京","藤原氏","摂関政治","源氏物語","国風文化","院政","源平合戦"]
+  },
+  {
+    id:"kamakura",name:"鎌倉時代",period:"1185-1333年",years:[1185,1333],
+    subtitle:"武家政権の確立と蒙古襲来",
+    politics:"源頼朝が鎌倉幕府を開き、初の武家政権を確立。守護・地頭制度。北条氏の執権政治。御成敗式目（武家法の基本）。承久の乱で朝廷を制圧。",
+    economy:"荘園制と地頭の二重支配。農業技術の進歩（二毛作の普及）。定期市の発展。貨幣経済の浸透（宋銭の流通）。",
+    foreign:"元寇（1274年文永の役、1281年弘安の役）で蒙古軍を撃退。日宋貿易の継続。禅僧の往来による文化交流。",
+    culture:[
+      {cat:"文学",name:"平家物語",desc:"平氏の盛衰を描いた軍記物語。琵琶法師が語り継ぐ"},
+      {cat:"仏教",name:"鎌倉新仏教",desc:"浄土宗・浄土真宗・日蓮宗・禅宗など民衆仏教の興隆"},
+      {cat:"芸術",name:"運慶・快慶",desc:"東大寺南大門金剛力士像。力強い写実的彫刻"},
+      {cat:"建築",name:"円覚寺・建長寺",desc:"鎌倉五山の禅寺。武家文化の精神的支柱"},
+      {cat:"芸術",name:"似絵",desc:"肖像画の写実主義。源頼朝像など"},
+      {cat:"文学",name:"方丈記",desc:"鴨長明著。無常観を説く随筆文学の傑作"}
+    ],
+    events:[
+      {year:"1185年",title:"鎌倉幕府成立",desc:"守護・地頭の設置権を獲得。実質的な武家政権の開始"},
+      {year:"1192年",title:"源頼朝征夷大将軍",desc:"頼朝が征夷大将軍に任命され、幕府体制を確立"},
+      {year:"1221年",title:"承久の乱",desc:"後鳥羽上皇が幕府打倒を企てるが北条義時に鎮圧。幕府の優位が確定"},
+      {year:"1232年",title:"御成敗式目制定",desc:"北条泰時が制定。武家社会の慣習に基づく初の体系的法典。51箇条"},
+      {year:"1274年",title:"文永の役（元寇）",desc:"フビライ・ハンの蒙古軍が北九州に侵攻。暴風雨もあり撤退"},
+      {year:"1281年",title:"弘安の役（元寇）",desc:"14万の蒙古軍が再来。防塁と暴風雨（神風）により壊滅"},
+      {year:"1297年",title:"永仁の徳政令",desc:"御家人の窮乏を救うため借金帳消しの法令。しかし効果は一時的"},
+      {year:"1333年",title:"鎌倉幕府滅亡",desc:"後醍醐天皇の倒幕運動。足利尊氏・新田義貞の挙兵で幕府崩壊"}
+    ],
+    people:[
+      {name:"源頼朝",years:"1147-1199",role:"鎌倉幕府初代将軍",desc:"武家政権の創始者。平治の乱で伊豆に配流後、挙兵して平氏を滅ぼし幕府を開く。"},
+      {name:"北条政子",years:"1157-1225",role:"頼朝の妻・尼将軍",desc:"頼朝の死後も幕府政治に影響力。承久の乱では御家人を結束させる演説で知られる。"},
+      {name:"北条泰時",years:"1183-1242",role:"第3代執権",desc:"御成敗式目を制定。公正な政治で執権政治の全盛期を築く。名執権と評される。"},
+      {name:"法然",years:"1133-1212",role:"浄土宗開祖",desc:"「南無阿弥陀仏」の念仏を唱えれば誰でも極楽往生できると説く。民衆仏教の先駆。"},
+      {name:"親鸞",years:"1173-1263",role:"浄土真宗開祖",desc:"法然の弟子。悪人正機説を唱え、より徹底的な他力本願を説く。非僧非俗の生き方。"},
+      {name:"日蓮",years:"1222-1282",role:"日蓮宗開祖",desc:"法華経信仰を説き、他宗を激しく批判。「立正安国論」を著し国家諫暁を行う。"},
+      {name:"栄西",years:"1141-1215",role:"臨済宗開祖",desc:"中国から臨済禅を伝える。茶の栽培も普及させた。「喫茶養生記」著者。"},
+      {name:"運慶",years:"1150頃-1224",role:"仏師",desc:"東大寺南大門金剛力士像の制作者。力強く写実的な作風で鎌倉彫刻を代表。"}
+    ],
+    tags:["鎌倉幕府","源頼朝","御成敗式目","元寇","武家政権","鎌倉新仏教"]
+  },
+  {
+    id:"muromachi",name:"室町時代",period:"1336-1573年",years:[1336,1573],
+    subtitle:"文化の洗練と戦乱の世",
+    politics:"足利尊氏が室町幕府を開く。南北朝の動乱（〜1392年）。足利義満による統一。応仁の乱（1467年）で幕府権威失墜。下剋上の戦国時代へ突入。",
+    economy:"日明貿易（勘合貿易）。農業の発達（三毛作）。商工業の発展（座の組織）。土倉・酒屋による金融。貨幣経済のさらなる浸透。",
+    foreign:"日明貿易の展開。倭寇の活動と取締り。琉球王国との交易。朝鮮との国交。南蛮人の来航（16世紀）。",
+    culture:[
+      {cat:"建築",name:"金閣寺",desc:"足利義満建立。北山文化の象徴。豪華絢爛"},
+      {cat:"建築",name:"銀閣寺",desc:"足利義政建立。東山文化の象徴。わび・さびの美"},
+      {cat:"芸能",name:"能楽",desc:"観阿弥・世阿弥が大成。日本最古の舞台芸術"},
+      {cat:"芸術",name:"水墨画",desc:"雪舟が大成。墨の濃淡で自然を表現する絵画"},
+      {cat:"生活",name:"茶の湯",desc:"村田珠光が侘び茶を創始。日本文化の根幹"},
+      {cat:"建築",name:"書院造",desc:"現在の和室の原型。畳・床の間・障子"},
+      {cat:"芸能",name:"狂言",desc:"能の合間に演じる滑稽劇。庶民の生活を描く"},
+      {cat:"園芸",name:"枯山水",desc:"石と砂で自然を抽象的に表現する庭園様式"}
+    ],
+    events:[
+      {year:"1336年",title:"室町幕府成立",desc:"足利尊氏が建武式目を制定し、京都に幕府を開く"},
+      {year:"1338年",title:"南北朝の始まり",desc:"尊氏が北朝を擁立。後醍醐天皇は吉野に南朝を開く"},
+      {year:"1392年",title:"南北朝合一",desc:"足利義満が南北朝を統一。約60年の動乱に終止符"},
+      {year:"1397年",title:"金閣寺建立",desc:"義満が北山殿（金閣寺）を建立。北山文化の開花"},
+      {year:"1404年",title:"日明貿易開始",desc:"勘合符を用いた明との公式貿易。莫大な利益"},
+      {year:"1467年",title:"応仁の乱",desc:"細川氏vs山名氏の争いが全国に拡大。京都は焦土と化す。戦国時代の幕開け"},
+      {year:"1489年",title:"銀閣寺建立",desc:"義政が東山殿（銀閣寺）を建立。東山文化の象徴"},
+      {year:"1543年",title:"鉄砲伝来",desc:"ポルトガル人が種子島に漂着。火縄銃が日本の戦術を一変"},
+      {year:"1549年",title:"キリスト教伝来",desc:"フランシスコ・ザビエルが鹿児島に上陸。キリスト教布教開始"},
+      {year:"1573年",title:"室町幕府滅亡",desc:"織田信長が足利義昭を京都から追放。約240年の幕府終焉"}
+    ],
+    people:[
+      {name:"足利尊氏",years:"1305-1358",role:"室町幕府初代将軍",desc:"後醍醐天皇に反旗を翻し室町幕府を開く。南北朝の動乱の時代を切り開いた。"},
+      {name:"足利義満",years:"1358-1408",role:"第3代将軍",desc:"南北朝を統一。金閣寺建立。日明貿易を開始。室町幕府の最盛期を実現。"},
+      {name:"足利義政",years:"1436-1490",role:"第8代将軍",desc:"政治は混乱（応仁の乱）するも東山文化を開花。銀閣寺建立。文化的功績は大きい。"},
+      {name:"世阿弥",years:"1363-1443",role:"能楽師",desc:"父・観阿弥とともに能楽を大成。「風姿花伝」を著し芸術論を確立。"},
+      {name:"雪舟",years:"1420-1506",role:"画僧",desc:"水墨画を日本で大成。「天橋立図」「秋冬山水図」など。明に渡り画技を磨く。"},
+      {name:"一休宗純",years:"1394-1481",role:"禅僧",desc:"臨済宗の僧。風狂の精神で既成権威を批判。「一休さん」として庶民にも親しまれる。"},
+      {name:"フランシスコ・ザビエル",years:"1506-1552",role:"宣教師",desc:"イエズス会創設メンバー。1549年に鹿児島上陸。日本でのキリスト教布教の先駆者。"}
+    ],
+    tags:["室町幕府","金閣寺","応仁の乱","戦国時代","能楽","水墨画"]
+  },
+  {
+    id:"azuchi",name:"安土桃山時代",period:"1573-1603年",years:[1573,1603],
+    subtitle:"天下統一と華麗なる桃山文化",
+    politics:"織田信長の天下布武。本能寺の変後、豊臣秀吉が天下統一を完成。太閤検地・刀狩りによる兵農分離。身分制度の固定化。",
+    economy:"楽市楽座による商業自由化。太閤検地で全国的土地制度統一。鉱山開発（石見銀山など）。南蛮貿易の活発化。",
+    foreign:"南蛮貿易の最盛期。キリスト教の布教と弾圧。秀吉の朝鮮出兵（文禄・慶長の役）。東南アジアとの交易拡大。",
+    culture:[
+      {cat:"建築",name:"安土城・大坂城",desc:"壮大な天守閣を持つ城郭建築の革新"},
+      {cat:"芸術",name:"狩野永徳",desc:"金碧障壁画の大家。豪壮な桃山美術を代表"},
+      {cat:"茶道",name:"千利休",desc:"侘び茶を大成。茶道を日本文化の根幹に高める"},
+      {cat:"芸能",name:"歌舞伎の起源",desc:"出雲阿国のかぶき踊り。庶民芸能の誕生"},
+      {cat:"芸術",name:"南蛮文化",desc:"西洋の文物・技術・食文化が流入"},
+      {cat:"生活",name:"茶室建築",desc:"利休の影響で極小空間に宇宙を見出す美意識"}
+    ],
+    events:[
+      {year:"1573年",title:"室町幕府滅亡",desc:"信長が義昭を追放。実質的に信長の政権確立"},
+      {year:"1575年",title:"長篠の戦い",desc:"信長が鉄砲三段撃ちで武田騎馬隊を破る（通説）"},
+      {year:"1576年",title:"安土城築城",desc:"信長が近江に壮大な安土城を建設。天下統一の象徴"},
+      {year:"1582年",title:"本能寺の変",desc:"明智光秀の謀反により織田信長が自害。天下統一事業の中断"},
+      {year:"1583年",title:"賤ヶ岳の戦い",desc:"秀吉が柴田勝家を破り、信長後継の地位を確立"},
+      {year:"1588年",title:"刀狩り",desc:"秀吉が農民から武器を没収。兵農分離の徹底"},
+      {year:"1590年",title:"天下統一",desc:"秀吉が北条氏を滅ぼし、戦国時代に終止符"},
+      {year:"1592年",title:"文禄の役",desc:"秀吉が15万の大軍で朝鮮に出兵。明軍の介入で膠着"},
+      {year:"1597年",title:"慶長の役",desc:"2度目の朝鮮出兵。秀吉の死により撤退"},
+      {year:"1600年",title:"関ヶ原の戦い",desc:"徳川家康率いる東軍が石田三成率いる西軍を破る。天下分け目の決戦"}
+    ],
+    people:[
+      {name:"織田信長",years:"1534-1582",role:"武将・天下人",desc:"桶狭間の戦いで今川義元を破り台頭。楽市楽座、鉄砲の革新的活用。本能寺の変で49歳で死去。"},
+      {name:"豊臣秀吉",years:"1537-1598",role:"太閤・天下人",desc:"農民出身から天下統一を達成。太閤検地・刀狩り。朝鮮出兵は失敗に終わる。"},
+      {name:"徳川家康",years:"1543-1616",role:"武将・江戸幕府創始者",desc:"関ヶ原の勝利で実権を握る。忍耐と戦略で最終的に天下を取った三英傑の最後の一人。"},
+      {name:"明智光秀",years:"1528-1582",role:"武将",desc:"信長の重臣。本能寺の変で主君を討つ。山崎の戦いで秀吉に敗れ「三日天下」に終わる。"},
+      {name:"千利休",years:"1522-1591",role:"茶人",desc:"侘び茶を大成し茶道を芸術の域に高めた。信長・秀吉に仕えるも秀吉の命で切腹。"},
+      {name:"石田三成",years:"1560-1600",role:"武将・官僚",desc:"秀吉の側近。関ヶ原では西軍の中心。敗北後処刑されるが、義を貫いた生涯。"},
+      {name:"黒田官兵衛",years:"1546-1604",role:"軍師",desc:"秀吉の軍師として天下統一に貢献。優れた知略で「今孔明」と称される。"},
+      {name:"伊達政宗",years:"1567-1636",role:"武将・大名",desc:"「独眼竜」の異名。奥州の覇者。慶長遣欧使節を派遣するなど国際的視野も持つ。"}
+    ],
+    tags:["織田信長","豊臣秀吉","天下統一","南蛮文化","千利休","関ヶ原"]
+  },
+  {
+    id:"edo",name:"江戸時代",period:"1603-1868年",years:[1603,1868],
+    subtitle:"265年の泰平と成熟した文化",
+    politics:"徳川家康が江戸幕府を開く。幕藩体制（約260藩）。参勤交代制度。士農工商の身分制度。鎖国政策。幕末に幕府権威が動揺し大政奉還へ。",
+    economy:"米本位経済から貨幣経済への転換。商人の台頭（三井・住友など財閥の起源）。街道整備（五街道）。都市経済の発達。享保・天保の改革。",
+    foreign:"鎖国（1639年〜）：出島でオランダ・中国とのみ貿易。蘭学の発展。ペリー来航（1853年）で開国。不平等条約の締結。",
+    culture:[
+      {cat:"芸能",name:"歌舞伎",desc:"近松門左衛門・市川團十郎ら。江戸庶民文化の華"},
+      {cat:"芸術",name:"浮世絵",desc:"葛飾北斎・歌川広重ら。世界の印象派に影響"},
+      {cat:"文学",name:"俳諧",desc:"松尾芭蕉「奥の細道」。俳句の完成"},
+      {cat:"文学",name:"元禄文学",desc:"井原西鶴の浮世草子。市井の生活を描く"},
+      {cat:"学問",name:"蘭学",desc:"杉田玄白「解体新書」。西洋科学の受容"},
+      {cat:"学問",name:"国学",desc:"本居宣長「古事記伝」。日本固有の文化研究"},
+      {cat:"芸術",name:"琳派",desc:"尾形光琳・俵屋宗達ら。装飾的で華麗な美術"},
+      {cat:"生活",name:"寺子屋",desc:"庶民教育機関。江戸時代の識字率は世界最高水準"}
+    ],
+    events:[
+      {year:"1603年",title:"江戸幕府成立",desc:"家康が征夷大将軍に就任。264年続く幕府体制の開始"},
+      {year:"1615年",title:"大坂夏の陣",desc:"豊臣氏滅亡。徳川の天下が確定"},
+      {year:"1635年",title:"参勤交代制度化",desc:"武家諸法度改定により大名の参勤交代を義務化"},
+      {year:"1639年",title:"鎖国完成",desc:"ポルトガル船の来航禁止。出島でのオランダ・中国貿易のみ許可"},
+      {year:"1702年",title:"赤穂事件",desc:"赤穂浪士47人が吉良上野介を討つ。忠義の物語として人気"},
+      {year:"1716年",title:"享保の改革",desc:"8代将軍吉宗が財政再建・法制度整備を実施"},
+      {year:"1774年",title:"解体新書刊行",desc:"杉田玄白・前野良沢がオランダ語医学書を翻訳"},
+      {year:"1787年",title:"寛政の改革",desc:"松平定信による倹約・学問奨励の政治改革"},
+      {year:"1853年",title:"ペリー来航",desc:"米国ペリー提督が浦賀に来航。開国を要求"},
+      {year:"1854年",title:"日米和親条約",desc:"下田・箱館を開港。200年以上の鎖国が終焉"},
+      {year:"1867年",title:"大政奉還",desc:"15代将軍慶喜が政権を朝廷に返上。幕府体制の終焉"}
+    ],
+    people:[
+      {name:"徳川家康",years:"1543-1616",role:"江戸幕府初代将軍",desc:"関ヶ原の勝利から幕府を開設。265年の太平の基礎を築いた「狸親父」。"},
+      {name:"徳川吉宗",years:"1684-1751",role:"第8代将軍",desc:"享保の改革を実施。目安箱設置、倹約令、新田開発。「暴れん坊将軍」のモデル。"},
+      {name:"松尾芭蕉",years:"1644-1694",role:"俳人",desc:"俳諧を芸術に高めた。「奥の細道」は紀行文学の最高峰。「古池や蛙飛びこむ水の音」。"},
+      {name:"葛飾北斎",years:"1760-1849",role:"浮世絵師",desc:"「富嶽三十六景」で世界的に知られる。ゴッホ・モネら印象派に多大な影響。90歳まで制作。"},
+      {name:"歌川広重",years:"1797-1858",role:"浮世絵師",desc:"「東海道五十三次」で知られる風景画の名手。ゴッホが模写したことでも有名。"},
+      {name:"杉田玄白",years:"1733-1817",role:"蘭学者・医師",desc:"「解体新書」を翻訳刊行。蘭学発展の礎を築いた。「蘭学事始」を著す。"},
+      {name:"本居宣長",years:"1730-1801",role:"国学者",desc:"「古事記伝」44巻を著す。日本固有の精神「もののあはれ」を提唱。国学の大成者。"},
+      {name:"近松門左衛門",years:"1653-1725",role:"劇作家",desc:"人形浄瑠璃・歌舞伎の劇作家。「曽根崎心中」など。「日本のシェイクスピア」と評される。"},
+      {name:"坂本龍馬",years:"1836-1867",role:"志士",desc:"薩長同盟を仲介。大政奉還に尽力。海援隊を組織。近江屋事件で暗殺。"},
+      {name:"勝海舟",years:"1823-1899",role:"幕臣",desc:"咸臨丸で渡米。江戸城無血開城を実現。幕末の開明的幕臣を代表する人物。"}
+    ],
+    tags:["江戸幕府","鎖国","元禄文化","化政文化","浮世絵","ペリー来航","大政奉還"]
+  },
+  {
+    id:"meiji",name:"明治時代",period:"1868-1912年",years:[1868,1912],
+    subtitle:"近代国家の建設と文明開化",
+    politics:"明治維新により天皇中心の中央集権国家へ。廃藩置県。大日本帝国憲法（1889年）。帝国議会開設。立憲政治の始まり。",
+    economy:"殖産興業政策。富国強兵。官営模範工場（富岡製糸場など）。鉄道・電信の整備。資本主義経済の急速な発展。地租改正。",
+    foreign:"不平等条約の改正交渉。日清戦争（1894-95年）・日露戦争（1904-05年）の勝利。韓国併合（1910年）。列強の仲間入り。",
+    culture:[
+      {cat:"思想",name:"文明開化",desc:"西洋文明の急速な受容。散切り頭、洋服、牛鍋"},
+      {cat:"文学",name:"夏目漱石",desc:"「坊っちゃん」「こころ」など近代文学の巨匠"},
+      {cat:"教育",name:"学制",desc:"近代的教育制度の確立。義務教育の導入"},
+      {cat:"思想",name:"福沢諭吉",desc:"「学問のすゝめ」。近代的思想の普及に貢献"},
+      {cat:"芸術",name:"洋画・日本画",desc:"黒田清輝の洋画、横山大観の日本画が共存"},
+      {cat:"音楽",name:"西洋音楽導入",desc:"軍楽隊・唱歌教育を通じて西洋音楽が普及"}
+    ],
+    events:[
+      {year:"1868年",title:"明治維新",desc:"王政復古の大号令。戊辰戦争を経て新政府樹立"},
+      {year:"1869年",title:"版籍奉還",desc:"諸藩が領地と人民を朝廷に返還"},
+      {year:"1871年",title:"廃藩置県",desc:"藩を廃止し府県を設置。中央集権体制の確立"},
+      {year:"1872年",title:"学制公布",desc:"近代的学校制度の開始。全国に小学校設置"},
+      {year:"1877年",title:"西南戦争",desc:"西郷隆盛が蜂起するも政府軍に敗北。最後の士族反乱"},
+      {year:"1889年",title:"大日本帝国憲法発布",desc:"伊藤博文が起草。アジア初の近代的憲法。天皇主権"},
+      {year:"1894年",title:"日清戦争",desc:"朝鮮を巡る清との戦争。日本が勝利し台湾割譲・賠償金獲得"},
+      {year:"1904年",title:"日露戦争",desc:"満州・朝鮮を巡るロシアとの戦争。日本海海戦で勝利"},
+      {year:"1910年",title:"韓国併合",desc:"日韓併合条約により朝鮮半島を日本が統治"},
+      {year:"1912年",title:"明治天皇崩御",desc:"近代日本を象徴する明治天皇の崩御。大正への移行"}
+    ],
+    people:[
+      {name:"明治天皇",years:"1852-1912",role:"第122代天皇",desc:"近代日本の象徴。天皇親政のもと維新を推進。「五箇条の御誓文」を発布。"},
+      {name:"西郷隆盛",years:"1828-1877",role:"維新の志士",desc:"維新三傑の一人。江戸城無血開城。西南戦争で最期。「敬天愛人」の精神。"},
+      {name:"大久保利通",years:"1830-1878",role:"政治家",desc:"維新三傑の一人。殖産興業を推進。近代国家建設の設計者。紀尾井坂の変で暗殺。"},
+      {name:"伊藤博文",years:"1841-1909",role:"初代内閣総理大臣",desc:"大日本帝国憲法の起草者。初代・5代・7代・10代の総理大臣。ハルビンで暗殺。"},
+      {name:"福沢諭吉",years:"1835-1901",role:"思想家・教育者",desc:"「学問のすゝめ」「文明論之概略」著者。慶應義塾創設者。一万円札の肖像。"},
+      {name:"夏目漱石",years:"1867-1916",role:"小説家",desc:"「吾輩は猫である」「坊っちゃん」「こころ」。近代日本文学を確立。千円札の肖像。"},
+      {name:"東郷平八郎",years:"1848-1934",role:"海軍大将",desc:"日本海海戦でバルチック艦隊を撃破。「東洋のネルソン」と世界に名を馳せる。"},
+      {name:"渋沢栄一",years:"1840-1931",role:"実業家",desc:"「日本資本主義の父」。約500の企業設立に関与。道徳と経済の両立を説く。"}
+    ],
+    tags:["明治維新","文明開化","日清戦争","日露戦争","帝国憲法","殖産興業"]
+  },
+  {
+    id:"taisho",name:"大正・昭和前期",period:"1912-1945年",years:[1912,1945],
+    subtitle:"デモクラシーから戦争の時代へ",
+    politics:"大正デモクラシー（政党政治・普通選挙）→軍部の台頭→満州事変→日中戦争→太平洋戦争。大正天皇の短い治世と昭和の激動。",
+    economy:"第一次大戦の好景気→戦後不況→関東大震災→金融恐慌→昭和恐慌→軍需経済→戦時統制経済。財閥の肥大化と解体。",
+    foreign:"日英同盟終了。ワシントン体制。国際連盟脱退（1933年）。日独伊三国同盟。ABCD包囲網。太平洋戦争の敗北。",
+    culture:[
+      {cat:"文学",name:"芥川龍之介",desc:"「羅生門」「鼻」など。芥川賞の由来となる文豪"},
+      {cat:"思想",name:"大正デモクラシー",desc:"吉野作造の民本主義。民主主義運動の高まり"},
+      {cat:"芸術",name:"モダニズム",desc:"大正ロマン・モダンボーイ/ガール。西洋文化の大衆化"},
+      {cat:"映画",name:"日本映画の発展",desc:"黒澤明・小津安二郎ら世界的映画監督の登場"},
+      {cat:"生活",name:"大衆文化",desc:"ラジオ放送開始。デパート文化。野球の国民的人気"},
+      {cat:"文学",name:"プロレタリア文学",desc:"小林多喜二「蟹工船」。労働者の現実を描く"}
+    ],
+    events:[
+      {year:"1914年",title:"第一次世界大戦参戦",desc:"日英同盟に基づきドイツに宣戦布告。大戦景気"},
+      {year:"1918年",title:"米騒動",desc:"シベリア出兵を見越した米の投機で米価暴騰。全国的暴動"},
+      {year:"1923年",title:"関東大震災",desc:"マグニチュード7.9の大地震。死者10万人以上。東京壊滅"},
+      {year:"1925年",title:"普通選挙法",desc:"25歳以上の男性全員に選挙権。同時に治安維持法も制定"},
+      {year:"1931年",title:"満州事変",desc:"関東軍が柳条湖事件を起こし満州を占領。満州国建国"},
+      {year:"1933年",title:"国際連盟脱退",desc:"満州国問題で国際的孤立。松岡洋右が連盟から退場"},
+      {year:"1937年",title:"日中戦争開始",desc:"盧溝橋事件をきっかけに中国との全面戦争へ突入"},
+      {year:"1941年",title:"太平洋戦争開戦",desc:"真珠湾攻撃で米英に宣戦布告。世界大戦の拡大"},
+      {year:"1945年",title:"広島・長崎原爆投下",desc:"人類史上初の核兵器使用。約21万人が犠牲"},
+      {year:"1945年",title:"終戦",desc:"ポツダム宣言受諾。玉音放送。310万人の犠牲を出し敗戦"}
+    ],
+    people:[
+      {name:"大正天皇",years:"1879-1926",role:"第123代天皇",desc:"在位期間は短いが、大正デモクラシーの時代を象徴。病弱により摂政制に。"},
+      {name:"原敬",years:"1856-1921",role:"内閣総理大臣",desc:"「平民宰相」。初の本格的政党内閣を組織。東京駅で暗殺される。"},
+      {name:"吉野作造",years:"1878-1933",role:"政治学者",desc:"民本主義を提唱。大正デモクラシーの理論的指導者。東京帝大教授。"},
+      {name:"芥川龍之介",years:"1892-1927",role:"小説家",desc:"「羅生門」「蜘蛛の糸」「河童」。知性と芸術性の高い短編の名手。35歳で自殺。"},
+      {name:"東条英機",years:"1884-1948",role:"内閣総理大臣",desc:"太平洋戦争開戦時の首相。大東亜共栄圏を推進。東京裁判でA級戦犯として絞首刑。"},
+      {name:"山本五十六",years:"1884-1943",role:"連合艦隊司令長官",desc:"真珠湾攻撃を立案。日米開戦に反対していたが作戦を遂行。前線で戦死。"},
+      {name:"昭和天皇",years:"1901-1989",role:"第124代天皇",desc:"激動の昭和を象徴。終戦の「玉音放送」を行い、戦後は象徴天皇として国民に寄り添う。"},
+      {name:"小林多喜二",years:"1903-1933",role:"小説家",desc:"「蟹工船」で知られるプロレタリア文学の旗手。特高警察の拷問により29歳で獄死。"}
+    ],
+    tags:["大正デモクラシー","関東大震災","満州事変","太平洋戦争","軍国主義"]
+  },
+  {
+    id:"postwar",name:"戦後日本",period:"1945-1989年",years:[1945,1989],
+    subtitle:"焦土からの復興と経済大国への道",
+    politics:"GHQ占領下の民主化改革。日本国憲法制定（1947年）。サンフランシスコ講和条約で主権回復。55年体制（自民党長期政権）。冷戦構造下の日米同盟。",
+    economy:"戦後復興→朝鮮特需→高度経済成長（1955-73年）→オイルショック→安定成長→バブル経済。「東洋の奇跡」と呼ばれる経済発展。",
+    foreign:"日米安保条約。冷戦下の西側陣営。沖縄返還（1972年）。日中国交正常化（1972年）。経済摩擦。G7参加。",
+    culture:[
+      {cat:"映画",name:"黒澤明",desc:"「七人の侍」「羅生門」。世界映画史に不朽の名を刻む"},
+      {cat:"文学",name:"川端康成",desc:"日本人初のノーベル文学賞。「雪国」「伊豆の踊子」"},
+      {cat:"漫画",name:"手塚治虫",desc:"「鉄腕アトム」。漫画・アニメ文化の礎を築く"},
+      {cat:"音楽",name:"美空ひばり",desc:"戦後復興を象徴する「昭和の歌姫」"},
+      {cat:"技術",name:"新幹線",desc:"1964年開業。「夢の超特急」。日本の技術力の象徴"},
+      {cat:"スポーツ",name:"東京オリンピック",desc:"1964年開催。戦後復興を世界に示す"},
+      {cat:"生活",name:"三種の神器",desc:"テレビ・洗濯機・冷蔵庫。消費社会の到来"},
+      {cat:"文学",name:"三島由紀夫",desc:"「金閣寺」「仮面の告白」。ノーベル賞候補の文豪"}
+    ],
+    events:[
+      {year:"1945年",title:"GHQ占領開始",desc:"連合国軍最高司令官マッカーサーが厚木飛行場に到着"},
+      {year:"1946年",title:"日本国憲法公布",desc:"国民主権・基本的人権・平和主義を三大原則とする新憲法"},
+      {year:"1947年",title:"教育基本法",desc:"6・3・3・4制の新しい教育制度が発足"},
+      {year:"1951年",title:"サンフランシスコ講和条約",desc:"48カ国との講和条約で日本の主権を回復。日米安保条約同時締結"},
+      {year:"1955年",title:"55年体制成立",desc:"自由民主党と日本社会党の二大政党制。自民党長期政権の始まり"},
+      {year:"1964年",title:"東京オリンピック",desc:"アジア初のオリンピック。新幹線・首都高速も同年開業"},
+      {year:"1972年",title:"沖縄返還",desc:"27年間の米軍統治を経て沖縄の施政権が日本に返還"},
+      {year:"1972年",title:"日中国交正常化",desc:"田中角栄首相が訪中。毛沢東・周恩来と会談"},
+      {year:"1973年",title:"オイルショック",desc:"第四次中東戦争で原油価格が4倍に。高度成長の終焉"},
+      {year:"1985年",title:"プラザ合意",desc:"G5でドル安誘導合意。急激な円高がバブル経済の遠因に"},
+      {year:"1989年",title:"昭和天皇崩御",desc:"昭和64年1月7日崩御。激動の昭和時代が終わる"}
+    ],
+    people:[
+      {name:"吉田茂",years:"1878-1967",role:"内閣総理大臣",desc:"戦後日本の外交路線（日米同盟・軽武装・経済重視）を確立。5度首相を務める。"},
+      {name:"マッカーサー",years:"1880-1964",role:"GHQ最高司令官",desc:"占領下の日本を統治。民主化改革・農地改革・財閥解体を実施。朝鮮戦争中に解任。"},
+      {name:"田中角栄",years:"1918-1993",role:"内閣総理大臣",desc:"「日本列島改造論」。日中国交正常化を実現。ロッキード事件で逮捕。「闇将軍」。"},
+      {name:"黒澤明",years:"1910-1998",role:"映画監督",desc:"「七人の侍」「羅生門」。世界の映画人に多大な影響。アカデミー名誉賞受賞。"},
+      {name:"川端康成",years:"1899-1972",role:"小説家",desc:"1968年ノーベル文学賞受賞。「雪国」「千羽鶴」「古都」。日本の美を世界に伝えた。"},
+      {name:"手塚治虫",years:"1928-1989",role:"漫画家",desc:"「漫画の神様」。鉄腕アトム、ブラック・ジャック、火の鳥。日本漫画・アニメの基礎を確立。"},
+      {name:"松下幸之助",years:"1894-1989",role:"実業家",desc:"パナソニック（松下電器）創業者。「経営の神様」。PHP研究所設立で社会貢献。"},
+      {name:"三島由紀夫",years:"1925-1970",role:"小説家",desc:"「金閣寺」「豊饒の海」。ノーベル賞候補。1970年に自衛隊駐屯地で割腹自殺。"}
+    ],
+    tags:["GHQ占領","日本国憲法","高度経済成長","東京五輪","バブル経済","冷戦"]
+  },
+  {
+    id:"heisei",name:"平成・令和時代",period:"1989年-現在",years:[1989,2026],
+    subtitle:"転換期を生きる日本",
+    politics:"55年体制崩壊。政権交代（民主党政権2009-12年）。安倍長期政権。少子高齢化対策。令和への改元（2019年）。",
+    economy:"バブル崩壊（1991年）。失われた30年。デフレ経済。アベノミクス。格差社会。デジタル経済への転換。",
+    foreign:"湾岸戦争でのPKO参加。北朝鮮問題。日韓・日中関係。TPP。ウクライナ危機。インド太平洋戦略。",
+    culture:[
+      {cat:"技術",name:"インターネット革命",desc:"1990年代後半から急速に普及。社会を根本的に変革"},
+      {cat:"芸術",name:"村上春樹",desc:"「ノルウェイの森」「1Q84」。世界的ベストセラー作家"},
+      {cat:"文化",name:"クールジャパン",desc:"アニメ・漫画・ゲームなどの日本のポップカルチャーが世界を席巻"},
+      {cat:"文化",name:"和食ユネスコ登録",desc:"2013年に無形文化遺産に登録。日本食文化の世界的評価"},
+      {cat:"技術",name:"スマートフォン時代",desc:"2010年代以降、社会のデジタル化が加速"},
+      {cat:"スポーツ",name:"2020東京オリンピック",desc:"COVID-19で1年延期。無観客開催という異例の大会"}
+    ],
+    events:[
+      {year:"1989年",title:"平成改元",desc:"昭和天皇崩御。小渕官房長官が「平成」を掲げる"},
+      {year:"1991年",title:"バブル崩壊",desc:"地価・株価が暴落。「失われた10年（→30年）」の始まり"},
+      {year:"1995年",title:"阪神・淡路大震災",desc:"M7.3の直下型地震。死者6434人。ボランティア元年"},
+      {year:"1995年",title:"地下鉄サリン事件",desc:"オウム真理教による化学テロ。死者13人。社会に衝撃"},
+      {year:"2002年",title:"日韓W杯",desc:"FIFA W杯をアジア初・共同開催。日本代表ベスト16"},
+      {year:"2011年",title:"東日本大震災",desc:"M9.0の巨大地震と津波。福島原発事故。死者・行方不明者約2万人"},
+      {year:"2019年",title:"令和改元",desc:"上皇の生前退位により天皇が即位。令和時代の幕開け"},
+      {year:"2020年",title:"COVID-19パンデミック",desc:"世界的感染症の流行。社会・経済・生活様式に甚大な影響"},
+      {year:"2021年",title:"東京オリンピック開催",desc:"1年延期の末に開催。ほぼ無観客。日本は金27個で史上最多"},
+      {year:"2025年",title:"大阪万博",desc:"「いのち輝く未来社会のデザイン」をテーマに開催"}
+    ],
+    people:[
+      {name:"上皇明仁",years:"1933-",role:"第125代天皇",desc:"「象徴天皇」として国民に寄り添う。2019年に生前退位（約200年ぶり）。"},
+      {name:"安倍晋三",years:"1954-2022",role:"内閣総理大臣",desc:"最長在任の首相。アベノミクス・安保法制。2022年に銃撃により死去。"},
+      {name:"小泉純一郎",years:"1942-",role:"内閣総理大臣",desc:"「構造改革」を掲げ郵政民営化を実現。高い国民的人気で「劇場型政治」。"},
+      {name:"村上春樹",years:"1949-",role:"小説家",desc:"「ノルウェイの森」「1Q84」。ノーベル文学賞候補の常連。世界で最も読まれる日本人作家。"},
+      {name:"宮崎駿",years:"1941-",role:"アニメ監督",desc:"スタジオジブリ創設者。「千と千尋の神隠し」でアカデミー賞。日本アニメの世界的評価を確立。"},
+      {name:"大谷翔平",years:"1994-",role:"プロ野球選手",desc:"投打の「二刀流」でMLBのMVP。日本スポーツ史上最も世界的に知名度の高い選手の一人。"},
+      {name:"任天堂・宮本茂",years:"1952-",role:"ゲームデザイナー",desc:"マリオ・ゼルダの生みの親。「現代のウォルト・ディズニー」と評されるゲーム界のレジェンド。"}
+    ],
+    tags:["バブル崩壊","失われた30年","東日本大震災","クールジャパン","令和","デジタル化"]
+  }
+];
+
+// Connections data
+const CONNECTIONS = [
+  {title:"仏教の変遷",eras:"飛鳥→奈良→平安→鎌倉",desc:"大陸から伝来した仏教は、奈良で学問仏教として発展し、平安で密教（天台・真言）が主流に。鎌倉時代に民衆仏教（浄土宗・禅宗・日蓮宗）が開花。各時代の政治・社会の変化と連動して変容。"},
+  {title:"天皇と武家の権力闘争",eras:"平安→鎌倉→室町→江戸→明治",desc:"平安末期に武士が台頭し、鎌倉で武家政権が確立。室町・江戸と武家支配が続くも、天皇の権威は象徴として存続。明治維新で天皇親政に回帰。権力の所在が日本史の通奏低音。"},
+  {title:"対外関係と鎖国・開国",eras:"飛鳥→奈良→平安→室町→江戸→明治",desc:"遣隋使・遣唐使で積極的に大陸文化を吸収→遣唐使廃止で国風文化→日明貿易→鎖国→ペリー来航で開国。日本は対外交流と内向きを繰り返し、その度に文化的変容を遂げた。"},
+  {title:"文字・文学の発展",eras:"奈良→平安→鎌倉→江戸→明治",desc:"万葉仮名→ひらがな・カタカナの発明→源氏物語等の国文学→軍記物語→江戸の多様な文芸→近代文学。表記体系の発展が文学の多様化を支え、日本独自の表現世界を築いた。"},
+  {title:"土地制度の変遷",eras:"飛鳥→奈良→平安→鎌倉→安土桃山→明治",desc:"公地公民制→荘園制度の発達→武士による土地支配→太閤検地→地租改正。土地の所有と分配は各時代の政治体制と密接に結びつき、社会構造を規定した。"},
+  {title:"都市の発展",eras:"奈良→平安→鎌倉→室町→江戸→明治→現代",desc:"平城京→平安京→鎌倉→京都（室町）→江戸→東京。政治の中心地が都市を形成し、それぞれの時代の文化・経済を牽引。江戸は18世紀に世界最大の都市に。"},
+  {title:"女性の役割の変化",eras:"縄文→飛鳥→平安→江戸→明治→現代",desc:"卑弥呼の女王統治→推古天皇の女帝→紫式部ら女流文学者の活躍→江戸期の家制度→明治の良妻賢母→現代の男女共同参画。女性の社会的位置づけは時代とともに大きく変動。"},
+  {title:"経済体制の転換",eras:"弥生→奈良→鎌倉→江戸→明治→戦後→平成",desc:"物々交換→租庸調→荘園経済→米本位制→貨幣経済→資本主義→高度成長→バブルと崩壊。経済システムの変遷が社会構造と人々の生活を根本から変えていった。"},
+  {title:"技術革新と社会変革",eras:"弥生→安土桃山→江戸→明治→戦後→平成",desc:"稲作伝来→鉄砲伝来→蘭学→産業革命→高度成長の技術→IT革命。外来技術の吸収と独自発展を繰り返し、日本社会は大きく変貌。技術と社会の相互作用が歴史を動かす。"},
+  {title:"戦争と平和",eras:"古墳→鎌倉→戦国→江戸→明治→昭和→戦後",desc:"白村江→元寇→戦国乱世→265年の太平→日清・日露・世界大戦→憲法9条と平和主義。戦争と平和のサイクルが日本の国のかたちを規定してきた。"}
+];
+
+// Glossary data
+const GLOSSARY = [
+  {term:"律令制",reading:"りつりょうせい",def:"中国の律（刑法）・令（行政法）に基づく国家統治制度。飛鳥〜奈良時代に整備。大宝律令が代表。",era:"飛鳥・奈良"},
+  {term:"摂関政治",reading:"せっかんせいじ",def:"天皇の外戚として摂政・関白に就いた藤原氏が政治の実権を握る体制。平安中期が最盛期。",era:"平安"},
+  {term:"院政",reading:"いんせい",def:"退位した天皇（上皇・法皇）が政治の実権を握る体制。白河上皇が1086年に開始。",era:"平安"},
+  {term:"荘園",reading:"しょうえん",def:"貴族・寺社が所有する私的領地。不輸不入の権を持ち、律令制の公地公民制を空洞化させた。",era:"平安・鎌倉"},
+  {term:"御成敗式目",reading:"ごせいばいしきもく",def:"1232年に北条泰時が制定した武家法。51箇条。武家社会の慣習に基づく初の体系的法典。",era:"鎌倉"},
+  {term:"元寇",reading:"げんこう",def:"1274年（文永の役）と1281年（弘安の役）のモンゴル帝国による日本侵攻。「神風」で撃退。",era:"鎌倉"},
+  {term:"下剋上",reading:"げこくじょう",def:"身分の低い者が上位者を実力で倒す風潮。室町後期〜戦国時代の社会原理。",era:"室町・戦国"},
+  {term:"楽市楽座",reading:"らくいちらくざ",def:"座（独占的商工業組合）を廃止し、自由な商業取引を認める政策。信長が推進。",era:"安土桃山"},
+  {term:"鎖国",reading:"さこく",def:"江戸幕府の対外政策。キリスト教禁止と貿易統制。出島でオランダ・中国とのみ交易。1639-1854年。",era:"江戸"},
+  {term:"参勤交代",reading:"さんきんこうたい",def:"大名が1年おきに江戸と領地を往復する制度。幕府の統制手段であり、街道・宿場の発展にも寄与。",era:"江戸"},
+  {term:"蘭学",reading:"らんがく",def:"オランダ語を通じて西洋の学問・技術を学ぶ学問。杉田玄白「解体新書」が画期。",era:"江戸"},
+  {term:"国学",reading:"こくがく",def:"日本固有の文化・精神を研究する学問。本居宣長が大成。「もののあはれ」を提唱。",era:"江戸"},
+  {term:"尊王攘夷",reading:"そんのうじょうい",def:"天皇を尊び外国勢力を排除する思想。幕末の政治運動の中心的イデオロギー。",era:"江戸末期"},
+  {term:"大政奉還",reading:"たいせいほうかん",def:"1867年、15代将軍慶喜が政権を朝廷に返上。約700年の武家政権に終止符。",era:"江戸末期"},
+  {term:"版籍奉還",reading:"はんせきほうかん",def:"1869年、藩主が土地（版）と人民（籍）を天皇に返還した改革。廃藩置県の前段階。",era:"明治"},
+  {term:"廃藩置県",reading:"はいはんちけん",def:"1871年、約260の藩を廃止し3府72県を設置。中央集権国家体制の確立。",era:"明治"},
+  {term:"殖産興業",reading:"しょくさんこうぎょう",def:"明治政府の近代化政策。官営模範工場の建設、鉄道・電信の整備など。",era:"明治"},
+  {term:"富国強兵",reading:"ふこくきょうへい",def:"国を豊かにし軍事力を強化する明治政府のスローガン。殖産興業と徴兵制が二本柱。",era:"明治"},
+  {term:"大日本帝国憲法",reading:"だいにほんていこくけんぽう",def:"1889年発布。天皇主権のもとアジア初の近代的憲法。伊藤博文が起草。",era:"明治"},
+  {term:"大正デモクラシー",reading:"たいしょうでもくらしー",def:"大正期の民主主義的運動・思潮の総称。政党政治の確立と普通選挙の実現に寄与。",era:"大正"},
+  {term:"高度経済成長",reading:"こうどけいざいせいちょう",def:"1955年〜1973年の年平均10%前後の経済成長。「東洋の奇跡」と呼ばれた。",era:"戦後"},
+  {term:"バブル経済",reading:"ばぶるけいざい",def:"1986年〜1991年の資産価格の異常な高騰。崩壊後「失われた30年」のデフレ経済に。",era:"平成"},
+  {term:"神風",reading:"かみかぜ",def:"元寇時にモンゴル艦隊を壊滅させたとされる暴風雨。日本の神国思想を強化した。",era:"鎌倉"},
+  {term:"武士道",reading:"ぶしどう",def:"武士の行動規範・道徳。忠義・礼節・名誉を重んじる。新渡戸稲造が英語で世界に紹介。",era:"鎌倉〜近代"},
+  {term:"天下布武",reading:"てんかふぶ",def:"信長が使用した印章の文言。武力で天下を統一するという志を表す。",era:"安土桃山"},
+  {term:"兵農分離",reading:"へいのうぶんり",def:"武士と農民の身分を明確に区別する政策。刀狩りと太閤検地で実現。",era:"安土桃山"},
+  {term:"五箇条の御誓文",reading:"ごかじょうのごせいもん",def:"1868年、明治天皇が発布した新政府の基本方針。公議・開国和親など5条。",era:"明治"},
+  {term:"文明開化",reading:"ぶんめいかいか",def:"明治初期の西洋文明受容。散切り頭・洋服・牛鍋・鉄道・郵便など生活が激変。",era:"明治"},
+  {term:"国風文化",reading:"こくふうぶんか",def:"遣唐使廃止後に発展した日本独自の文化。仮名文字・源氏物語・大和絵などが代表。",era:"平安"},
+  {term:"日本国憲法",reading:"にほんこくけんぽう",def:"1946年公布・1947年施行。国民主権・基本的人権の尊重・平和主義が三大原則。",era:"戦後"}
+];
+
+// Quiz data
+const QUIZZES = [
+  {q:"邪馬台国の女王として魏に朝貢した人物は？",a:"卑弥呼",opts:["卑弥呼","台与","推古天皇","持統天皇"],exp:"卑弥呼は239年に魏に朝貢し、「親魏倭王」の称号と金印を受けた。",cat:"古代"},
+  {q:"大化の改新（645年）で蘇我氏を倒した中心人物は？",a:"中大兄皇子と中臣鎌足",opts:["聖徳太子と蘇我馬子","中大兄皇子と中臣鎌足","天武天皇と藤原不比等","桓武天皇と坂上田村麻呂"],exp:"中大兄皇子（後の天智天皇）と中臣鎌足（後の藤原鎌足）が蘇我入鹿を暗殺し改革を開始。",cat:"古代"},
+  {q:"日本最古の歌集は？",a:"万葉集",opts:["古今和歌集","新古今和歌集","万葉集","金葉集"],exp:"万葉集は奈良時代に編纂された約4500首を収録する日本最古の歌集。大伴家持が編者とされる。",cat:"文化"},
+  {q:"平安時代に摂関政治の最盛期を築いた人物は？",a:"藤原道長",opts:["藤原不比等","藤原頼通","藤原道長","菅原道真"],exp:"藤原道長は4人の娘を天皇の后に立て、「此の世をば我が世とぞ思ふ」と詠んだ。",cat:"政治"},
+  {q:"源氏物語の作者は？",a:"紫式部",opts:["清少納言","紫式部","和泉式部","赤染衛門"],exp:"紫式部は一条天皇の中宮彰子に仕えた女房。源氏物語は世界最古の長編小説とされる。",cat:"文化"},
+  {q:"鎌倉幕府を開いた人物は？",a:"源頼朝",opts:["源義経","源頼朝","北条時政","平清盛"],exp:"源頼朝は1185年に守護・地頭の設置権を獲得し、1192年に征夷大将軍に就任して鎌倉幕府を確立。",cat:"政治"},
+  {q:"御成敗式目を制定した人物は？",a:"北条泰時",opts:["北条時宗","北条泰時","北条政子","源頼朝"],exp:"北条泰時は1232年に武家社会の慣習に基づく51箇条の法典「御成敗式目」を制定した。",cat:"政治"},
+  {q:"応仁の乱（1467年）が引き起こした結果は？",a:"戦国時代の始まり",opts:["鎌倉幕府の滅亡","南北朝の統一","戦国時代の始まり","室町幕府の強化"],exp:"応仁の乱で京都は焦土と化し、幕府の権威は失墜。下剋上の風潮が全国に広がり戦国時代へ突入。",cat:"政治"},
+  {q:"金閣寺を建立した将軍は？",a:"足利義満",opts:["足利尊氏","足利義満","足利義政","足利義昭"],exp:"足利義満は室町幕府第3代将軍。1397年に北山殿（金閣寺）を建立。南北朝統一も実現した。",cat:"文化"},
+  {q:"1543年に日本に伝来したものは？",a:"鉄砲",opts:["キリスト教","鉄砲","印刷術","時計"],exp:"1543年、ポルトガル人が種子島に漂着し火縄銃を伝えた。日本の戦術を根本的に変えた。",cat:"外交"},
+  {q:"本能寺の変（1582年）で信長を討った人物は？",a:"明智光秀",opts:["豊臣秀吉","明智光秀","徳川家康","石田三成"],exp:"明智光秀は信長の重臣でありながら謀反を起こし、本能寺で信長を自害に追い込んだ。",cat:"政治"},
+  {q:"侘び茶を大成した茶人は？",a:"千利休",opts:["千利休","村田珠光","武野紹鴎","古田織部"],exp:"千利休は侘び茶を大成し、茶道を日本文化の根幹に高めた。信長・秀吉に仕えた。",cat:"文化"},
+  {q:"江戸幕府の鎖国政策で貿易が許されていた国は？",a:"オランダと中国",opts:["イギリスとフランス","スペインとポルトガル","オランダと中国","朝鮮とロシア"],exp:"鎖国下では長崎の出島でオランダとのみ西洋貿易が許可され、中国（清）とも貿易が続けられた。",cat:"外交"},
+  {q:"「奥の細道」の作者は？",a:"松尾芭蕉",opts:["松尾芭蕉","小林一茶","与謝蕪村","正岡子規"],exp:"松尾芭蕉は江戸時代の俳人。「奥の細道」は東北・北陸を巡る紀行文学の最高傑作。",cat:"文化"},
+  {q:"「富嶽三十六景」を描いた浮世絵師は？",a:"葛飾北斎",opts:["歌川広重","葛飾北斎","喜多川歌麿","東洲斎写楽"],exp:"葛飾北斎は「富嶽三十六景」で世界的に知られる。ゴッホやモネなど印象派に多大な影響を与えた。",cat:"文化"},
+  {q:"1853年に浦賀に来航した米国提督は？",a:"ペリー",opts:["ハリス","ペリー","マッカーサー","グラント"],exp:"マシュー・ペリーが黒船4隻で浦賀に来航し開国を要求。翌年に日米和親条約が締結された。",cat:"外交"},
+  {q:"明治維新の「維新三傑」に含まれないのは？",a:"伊藤博文",opts:["西郷隆盛","大久保利通","木戸孝允","伊藤博文"],exp:"維新三傑は西郷隆盛・大久保利通・木戸孝允。伊藤博文は次世代のリーダーで初代首相。",cat:"政治"},
+  {q:"大日本帝国憲法を起草した中心人物は？",a:"伊藤博文",opts:["大久保利通","板垣退助","伊藤博文","山県有朋"],exp:"伊藤博文はヨーロッパで憲法を研究し、プロイセン型をモデルに1889年に大日本帝国憲法を起草。",cat:"政治"},
+  {q:"日露戦争の日本海海戦で連合艦隊を率いた人物は？",a:"東郷平八郎",opts:["乃木希典","東郷平八郎","山本五十六","秋山真之"],exp:"東郷平八郎はバルチック艦隊を壊滅させ、「東洋のネルソン」と称された。",cat:"軍事"},
+  {q:"1945年に日本が受諾した宣言は？",a:"ポツダム宣言",opts:["カイロ宣言","ポツダム宣言","ヤルタ協定","サンフランシスコ宣言"],exp:"1945年8月14日にポツダム宣言を受諾し、翌15日の玉音放送で国民に終戦を知らせた。",cat:"軍事"},
+  {q:"日本国憲法の三大原則でないものは？",a:"富国強兵",opts:["国民主権","基本的人権の尊重","平和主義","富国強兵"],exp:"日本国憲法の三大原則は国民主権・基本的人権の尊重・平和主義。富国強兵は明治時代のスローガン。",cat:"政治"},
+  {q:"高度経済成長期の「三種の神器」に含まれないのは？",a:"自動車",opts:["テレビ","洗濯機","自動車","冷蔵庫"],exp:"三種の神器はテレビ・洗濯機・冷蔵庫。自動車はその後の「3C」（カー・クーラー・カラーテレビ）に含まれる。",cat:"経済"},
+  {q:"1964年に東京で初めて開催されたのは？",a:"オリンピック",opts:["万国博覧会","サミット","オリンピック","サッカーW杯"],exp:"1964年東京オリンピックはアジア初のオリンピック。同年に東海道新幹線も開業し、戦後復興を世界に示した。",cat:"経済"},
+  {q:"漫画の神様と呼ばれ「鉄腕アトム」を創作した人物は？",a:"手塚治虫",opts:["藤子不二雄","手塚治虫","宮崎駿","鳥山明"],exp:"手塚治虫は日本の漫画・アニメ文化の基礎を築いた「漫画の神様」。鉄腕アトムは日本初のTVアニメシリーズ。",cat:"文化"},
+  {q:"2011年に発生した東日本大震災のマグニチュードは？",a:"9.0",opts:["7.3","8.1","9.0","9.5"],exp:"2011年3月11日のマグニチュード9.0は日本観測史上最大。巨大津波と福島原発事故を引き起こした。",cat:"現代"},
+  {q:"聖徳太子が制定した位階制度は？",a:"冠位十二階",opts:["冠位十二階","八色の姓","氏姓制度","官位相当制"],exp:"603年に制定。家柄ではなく個人の才能・功績で位を授ける画期的な制度。",cat:"古代"},
+  {q:"東大寺の大仏建立を命じた天皇は？",a:"聖武天皇",opts:["天武天皇","聖武天皇","桓武天皇","後醍醐天皇"],exp:"聖武天皇は仏教による国家鎮護を志し、741年に国分寺建立の詔、752年に東大寺大仏の開眼供養を行った。",cat:"古代"},
+  {q:"世阿弥が大成した日本の伝統芸能は？",a:"能楽",opts:["歌舞伎","能楽","文楽","狂言"],exp:"世阿弥は父・観阿弥とともに能楽を大成。「風姿花伝」で芸術論を確立した。",cat:"文化"},
+  {q:"関ヶ原の戦い（1600年）で東軍を率いた人物は？",a:"徳川家康",opts:["徳川家康","豊臣秀吉","石田三成","毛利輝元"],exp:"徳川家康率いる東軍が石田三成率いる西軍を破り、天下の覇権を確立した。",cat:"政治"},
+  {q:"日本人初のノーベル文学賞受賞者は？",a:"川端康成",opts:["夏目漱石","三島由紀夫","川端康成","大江健三郎"],exp:"川端康成は1968年にノーベル文学賞を受賞。「雪国」「千羽鶴」「古都」の業績が評価された。",cat:"文化"}
+];
+
+// ===== STATE =====
+let currentView = 'home';
+let bookmarks = JSON.parse(localStorage.getItem('jh_bookmarks') || '[]');
+let quizState = {current:0, score:0, answered:false, category:'all', questions:[]};
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  // Stats
+  let totalPeople = 0, totalEvents = 0;
+  ERAS.forEach(e => { totalPeople += e.people.length; totalEvents += e.events.length; });
+  document.getElementById('statPeople').textContent = totalPeople;
+  document.getElementById('statEvents').textContent = totalEvents;
+  document.getElementById('statTerms').textContent = GLOSSARY.length;
+
+  renderHomeGrid();
+  renderNav();
+  renderTimeline();
+  renderEraGrid();
+  renderPeople();
+  renderConnections();
+  renderGlossary();
+  renderCompareSelectors();
+  renderQuizCats();
+  initSearch();
+  startQuiz();
+});
+
+// ===== NAV =====
+function renderNav() {
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      const view = btn.dataset.view;
+      document.getElementById('view-' + view).classList.add('active');
+      currentView = view;
+      if (view === 'bookmarks') renderBookmarks();
+    });
+  });
+}
+
+function switchView(viewName) {
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.view === viewName);
+  });
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + viewName).classList.add('active');
+  currentView = viewName;
+}
+
+// ===== HOME GRID =====
+function renderHomeGrid() {
+  const grid = document.getElementById('homeEraGrid');
+  grid.innerHTML = ERAS.map((era, i) => `
+    <div class="era-card" onclick="openEraDetail(${i})">
+      <button class="bookmark-btn ${bookmarks.includes(era.id)?'active':''}" onclick="event.stopPropagation();toggleBookmark('${era.id}',this)">&#9733;</button>
+      <div class="era-period">${era.period}</div>
+      <div class="era-name">${era.name}</div>
+      <div class="era-subtitle">${era.subtitle}</div>
+      <div class="era-tags">${era.tags.map(t=>`<span class="era-tag">${t}</span>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+// ===== ERA GRID =====
+function renderEraGrid() {
+  const grid = document.getElementById('eraGrid');
+  grid.innerHTML = ERAS.map((era, i) => `
+    <div class="era-card" onclick="openEraDetail(${i})">
+      <button class="bookmark-btn ${bookmarks.includes(era.id)?'active':''}" onclick="event.stopPropagation();toggleBookmark('${era.id}',this)">&#9733;</button>
+      <div class="era-period">${era.period}</div>
+      <div class="era-name">${era.name}</div>
+      <div class="era-subtitle">${era.subtitle}</div>
+      <div style="margin-top:8px;font-size:.78rem;color:var(--text2)">
+        <span style="color:var(--accent)">${era.events.length}</span> 事件 &middot;
+        <span style="color:var(--gold)">${era.people.length}</span> 人物 &middot;
+        <span style="color:var(--purple)">${era.culture.length}</span> 文化
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== ERA DETAIL =====
+function openEraDetail(idx) {
+  const era = ERAS[idx];
+  const panel = document.getElementById('detailPanel');
+  panel.innerHTML = `
+    <div class="detail-header">
+      <button class="detail-close" onclick="closeDetail()">&times;</button>
+      <div class="era-label">${era.period}</div>
+      <h2>${era.name}</h2>
+      <div class="era-period-full">${era.subtitle}</div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-section">
+        <h3>政治体制</h3>
+        <p style="font-size:.85rem;color:var(--text2);line-height:1.8">${era.politics}</p>
+      </div>
+      <div class="detail-section">
+        <h3>経済</h3>
+        <p style="font-size:.85rem;color:var(--text2);line-height:1.8">${era.economy}</p>
+      </div>
+      <div class="detail-section">
+        <h3>対外関係</h3>
+        <p style="font-size:.85rem;color:var(--text2);line-height:1.8">${era.foreign}</p>
+      </div>
+      <div class="detail-section">
+        <h3>主要事件 (${era.events.length})</h3>
+        <ul class="detail-list">
+          ${era.events.map(e => `<li><span class="year">${e.year}</span><div><strong>${e.title}</strong><br><span style="color:var(--text3);font-size:.78rem">${e.desc}</span></div></li>`).join('')}
+        </ul>
+      </div>
+      <div class="detail-section">
+        <h3>重要人物 (${era.people.length})</h3>
+        <div class="person-grid">
+          ${era.people.map(p => `
+            <div class="person-chip" onclick="openPersonDetail('${p.name.replace(/'/g,"\\'")}',${idx})">
+              <div class="name">${p.name}</div>
+              <div class="role">${p.years} / ${p.role}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div class="detail-section">
+        <h3>文化・芸術 (${era.culture.length})</h3>
+        <div class="culture-grid">
+          ${era.culture.map(c => `
+            <div class="culture-item">
+              <div class="cat">${c.cat}</div>
+              <div style="font-weight:600;margin-bottom:2px">${c.name}</div>
+              <div style="color:var(--text3);font-size:.75rem">${c.desc}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('detailOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function openPersonDetail(name, eraIdx) {
+  const era = ERAS[eraIdx];
+  const person = era.people.find(p => p.name === name);
+  if (!person) return;
+  const panel = document.getElementById('detailPanel');
+  panel.innerHTML = `
+    <div class="detail-header">
+      <button class="detail-close" onclick="closeDetail()">&times;</button>
+      <div class="era-label">${era.name} / ${era.period}</div>
+      <h2>${person.name}</h2>
+      <div class="era-period-full">${person.years} / ${person.role}</div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-section">
+        <h3>概要</h3>
+        <p style="font-size:.9rem;color:var(--text2);line-height:1.9">${person.desc}</p>
+      </div>
+      <div style="margin-top:16px">
+        <button onclick="openEraDetail(${eraIdx})" style="padding:8px 20px;background:var(--bg3);border:1px solid var(--border);color:var(--accent);border-radius:8px;font-size:.82rem;transition:.2s">${era.name}に戻る</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('detailOverlay').classList.add('open');
+}
+
+function closeDetail() {
+  document.getElementById('detailOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('detailOverlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('detailOverlay')) closeDetail();
+});
+
+// ===== TIMELINE =====
+function renderTimeline() {
+  const filters = document.getElementById('timelineFilters');
+  filters.innerHTML = `<span class="filter-chip active" data-era="all" onclick="filterTimeline('all',this)">すべて</span>` +
+    ERAS.map(e => `<span class="filter-chip" data-era="${e.id}" onclick="filterTimeline('${e.id}',this)">${e.name.split('時代')[0]}</span>`).join('');
+
+  renderTimelineItems('all');
+}
+
+function filterTimeline(eraId, el) {
+  document.querySelectorAll('#timelineFilters .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderTimelineItems(eraId);
+}
+
+function renderTimelineItems(filter) {
+  const wrap = document.getElementById('timelineWrap');
+  let items = [];
+  ERAS.forEach((era, idx) => {
+    if (filter !== 'all' && era.id !== filter) return;
+    era.events.forEach(ev => {
+      items.push({...ev, eraName: era.name, eraIdx: idx});
+    });
+  });
+  // Sort by year (rough parse)
+  items.sort((a, b) => {
+    const ya = parseYear(a.year), yb = parseYear(b.year);
+    return ya - yb;
+  });
+  document.getElementById('timelineCount').textContent = items.length + '件';
+  wrap.innerHTML = '<div class="timeline-line"></div>' + items.map(item => `
+    <div class="timeline-item" onclick="openEraDetail(${item.eraIdx})">
+      <div class="tl-year">${item.year}</div>
+      <div class="tl-title">${item.title}</div>
+      <div class="tl-desc">${item.desc}</div>
+      <span class="tl-era">${item.eraName}</span>
+    </div>
+  `).join('');
+}
+
+function parseYear(str) {
+  const s = str.replace(/年|頃/g,'');
+  if (s.startsWith('前')) return -parseInt(s.replace('前','').replace(/[万]/g,'0000')) || -10000;
+  const n = parseInt(s);
+  return isNaN(n) ? 0 : n;
+}
+
+// ===== PEOPLE =====
+function renderPeople() {
+  const filters = document.getElementById('peopleFilters');
+  filters.innerHTML = `<span class="filter-chip active" data-era="all" onclick="filterPeople('all',this)">すべて</span>` +
+    ERAS.map(e => `<span class="filter-chip" data-era="${e.id}" onclick="filterPeople('${e.id}',this)">${e.name.split('時代')[0]}</span>`).join('');
+  renderPeopleGrid('all');
+}
+
+function filterPeople(eraId, el) {
+  document.querySelectorAll('#peopleFilters .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderPeopleGrid(eraId);
+}
+
+function renderPeopleGrid(filter) {
+  const grid = document.getElementById('peopleGrid');
+  let people = [];
+  ERAS.forEach((era, idx) => {
+    if (filter !== 'all' && era.id !== filter) return;
+    era.people.forEach(p => {
+      people.push({...p, eraName: era.name, eraIdx: idx});
+    });
+  });
+  document.getElementById('peopleCount').textContent = people.length + '人';
+  grid.innerHTML = people.map(p => `
+    <div class="people-card" onclick="openPersonDetail('${p.name.replace(/'/g,"\\'")}',${p.eraIdx})">
+      <div class="p-era">${p.eraName}</div>
+      <div class="p-name">${p.name}</div>
+      <div class="p-years">${p.years}</div>
+      <div class="p-role">${p.role}</div>
+      <div class="p-desc">${p.desc.length > 60 ? p.desc.substring(0, 60) + '...' : p.desc}</div>
+    </div>
+  `).join('');
+}
+
+// ===== CONNECTIONS =====
+function renderConnections() {
+  const grid = document.getElementById('connectionsGrid');
+  grid.innerHTML = CONNECTIONS.map(c => `
+    <div class="connection-card">
+      <div class="c-title">${c.title}</div>
+      <div class="c-eras">${c.eras}</div>
+      <div class="c-desc">${c.desc}</div>
+    </div>
+  `).join('');
+}
+
+// ===== QUIZ =====
+function renderQuizCats() {
+  const cats = ['all','古代','政治','文化','外交','軍事','経済','現代'];
+  const labels = {'all':'全カテゴリ','古代':'古代','政治':'政治','文化':'文化','外交':'外交','軍事':'軍事','経済':'経済','現代':'現代'};
+  document.getElementById('quizCats').innerHTML = cats.map(c =>
+    `<button class="quiz-cat-btn ${c===quizState.category?'active':''}" onclick="setQuizCat('${c}',this)">${labels[c]}</button>`
+  ).join('');
+}
+
+function setQuizCat(cat, el) {
+  quizState.category = cat;
+  document.querySelectorAll('.quiz-cat-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  startQuiz();
+}
+
+function startQuiz() {
+  let qs = quizState.category === 'all' ? [...QUIZZES] : QUIZZES.filter(q => q.cat === quizState.category);
+  // Shuffle
+  for (let i = qs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [qs[i], qs[j]] = [qs[j], qs[i]];
+  }
+  quizState.questions = qs.slice(0, Math.min(10, qs.length));
+  quizState.current = 0;
+  quizState.score = 0;
+  quizState.answered = false;
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const container = document.getElementById('quizContainer');
+  if (quizState.current >= quizState.questions.length) {
+    const pct = Math.round(quizState.score / quizState.questions.length * 100);
+    container.innerHTML = `
+      <div class="quiz-card quiz-result">
+        <div class="quiz-score">${quizState.score}/${quizState.questions.length}</div>
+        <div class="quiz-score-label">正解率 ${pct}%</div>
+        <p style="margin-top:12px;color:var(--text2);font-size:.88rem">${pct>=80?'素晴らしい！日本史マスターです！':pct>=50?'なかなかの知識です。さらに学びましょう！':'まだまだ学べることがたくさんあります。頑張りましょう！'}</p>
+        <button class="quiz-restart" onclick="startQuiz()">もう一度挑戦</button>
+      </div>
+    `;
+    return;
+  }
+  const q = quizState.questions[quizState.current];
+  const total = quizState.questions.length;
+  const pct = (quizState.current / total) * 100;
+  container.innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-progress">
+        <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${pct}%"></div></div>
+        <div class="quiz-progress-text">${quizState.current+1} / ${total}</div>
+      </div>
+      <div class="quiz-question">${q.q}</div>
+      <div class="quiz-options">
+        ${q.opts.map((opt, i) => `<button class="quiz-option" onclick="answerQuiz(${i})">${opt}</button>`).join('')}
+      </div>
+      <div class="quiz-explanation" id="quizExp">${q.exp}</div>
+      <button class="quiz-next" id="quizNext" onclick="nextQuiz()">次の問題 &rarr;</button>
+    </div>
+  `;
+  quizState.answered = false;
+}
+
+function answerQuiz(idx) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  const q = quizState.questions[quizState.current];
+  const btns = document.querySelectorAll('.quiz-option');
+  btns.forEach((btn, i) => {
+    btn.disabled = true;
+    if (q.opts[i] === q.a) btn.classList.add('correct');
+    if (i === idx && q.opts[i] !== q.a) btn.classList.add('wrong');
+  });
+  if (q.opts[idx] === q.a) quizState.score++;
+  document.getElementById('quizExp').classList.add('show');
+  document.getElementById('quizNext').classList.add('show');
+}
+
+function nextQuiz() {
+  quizState.current++;
+  renderQuiz();
+}
+
+// ===== GLOSSARY =====
+function renderGlossary() {
+  const eras = ['すべて', ...new Set(GLOSSARY.map(g => g.era))];
+  document.getElementById('glossaryFilter').innerHTML = eras.map((e, i) =>
+    `<button class="glossary-filter-btn ${i===0?'active':''}" onclick="filterGlossary('${e}',this)">${e}</button>`
+  ).join('');
+  renderGlossaryGrid('すべて');
+}
+
+function filterGlossary(era, el) {
+  document.querySelectorAll('.glossary-filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderGlossaryGrid(era);
+}
+
+function renderGlossaryGrid(filter) {
+  const items = filter === 'すべて' ? GLOSSARY : GLOSSARY.filter(g => g.era === filter);
+  document.getElementById('glossaryCount').textContent = items.length + '語';
+  document.getElementById('glossaryGrid').innerHTML = items.map(g => `
+    <div class="glossary-item">
+      <div class="g-term">${g.term}</div>
+      <div class="g-reading">${g.reading}</div>
+      <div class="g-def">${g.def}</div>
+      <div class="g-era">${g.era}</div>
+    </div>
+  `).join('');
+}
+
+// ===== COMPARE =====
+function renderCompareSelectors() {
+  const html = ERAS.map((e, i) => `<option value="${i}">${e.name}</option>`).join('');
+  document.getElementById('compareA').innerHTML = html;
+  document.getElementById('compareB').innerHTML = html;
+  document.getElementById('compareB').selectedIndex = 1;
+}
+
+function renderCompare() {
+  const a = ERAS[document.getElementById('compareA').value];
+  const b = ERAS[document.getElementById('compareB').value];
+  if (a.id === b.id) {
+    document.getElementById('compareResult').innerHTML = '<p style="color:var(--text3);text-align:center;padding:40px">異なる時代を選択してください</p>';
+    return;
+  }
+  const rows = [
+    {label:'時期', va: a.period, vb: b.period},
+    {label:'政治体制', va: a.politics, vb: b.politics},
+    {label:'経済', va: a.economy, vb: b.economy},
+    {label:'対外関係', va: a.foreign, vb: b.foreign},
+    {label:'主要事件数', va: a.events.length + '件', vb: b.events.length + '件'},
+    {label:'重要人物数', va: a.people.length + '人', vb: b.people.length + '人'},
+    {label:'文化項目数', va: a.culture.length + '項目', vb: b.culture.length + '項目'},
+    {label:'代表的文化', va: a.culture.map(c=>c.name).join('、'), vb: b.culture.map(c=>c.name).join('、')},
+    {label:'代表的人物', va: a.people.slice(0,3).map(p=>p.name).join('、'), vb: b.people.slice(0,3).map(p=>p.name).join('、')}
+  ];
+  document.getElementById('compareResult').innerHTML = `
+    <div style="overflow-x:auto">
+      <table class="compare-table">
+        <thead><tr><th style="width:120px">項目</th><th>${a.name}</th><th>${b.name}</th></tr></thead>
+        <tbody>${rows.map(r => `
+          <tr><td class="cat-label">${r.label}</td><td style="font-size:.82rem;line-height:1.7">${r.va}</td><td style="font-size:.82rem;line-height:1.7">${r.vb}</td></tr>
+        `).join('')}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ===== BOOKMARKS =====
+function toggleBookmark(eraId, btn) {
+  const idx = bookmarks.indexOf(eraId);
+  if (idx >= 0) {
+    bookmarks.splice(idx, 1);
+  } else {
+    bookmarks.push(eraId);
+  }
+  localStorage.setItem('jh_bookmarks', JSON.stringify(bookmarks));
+  // Sync all bookmark buttons for this era across all views
+  document.querySelectorAll('.bookmark-btn').forEach(b => {
+    const card = b.closest('.era-card');
+    if (!card) return;
+    const onclick = b.getAttribute('onclick') || '';
+    if (onclick.includes("'" + eraId + "'")) {
+      b.classList.toggle('active', bookmarks.includes(eraId));
+    }
+  });
+}
+
+function renderBookmarks() {
+  const content = document.getElementById('bookmarksContent');
+  if (bookmarks.length === 0) {
+    content.innerHTML = `<div class="bookmarks-empty"><div class="icon">&#9733;</div><p>ブックマークした時代がありません</p><p style="font-size:.82rem;margin-top:8px">時代カードの星マークをクリックしてブックマークしましょう</p></div>`;
+    return;
+  }
+  const items = bookmarks.map(id => ERAS.find(e => e.id === id)).filter(Boolean);
+  content.innerHTML = `<div class="cards-grid">${items.map((era, i) => {
+    const realIdx = ERAS.indexOf(era);
+    return `
+      <div class="era-card" onclick="openEraDetail(${realIdx})">
+        <button class="bookmark-btn active" onclick="event.stopPropagation();toggleBookmark('${era.id}',this);renderBookmarks()">&#9733;</button>
+        <div class="era-period">${era.period}</div>
+        <div class="era-name">${era.name}</div>
+        <div class="era-subtitle">${era.subtitle}</div>
+      </div>
+    `;
+  }).join('')}</div>`;
+}
+
+// ===== SEARCH =====
+function initSearch() {
+  const input = document.getElementById('globalSearch');
+  const results = document.getElementById('searchResults');
+
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    if (q.length < 1) { results.classList.remove('open'); return; }
+
+    let matches = [];
+
+    // Search eras
+    ERAS.forEach((era, idx) => {
+      if (era.name.toLowerCase().includes(q) || era.subtitle.includes(q)) {
+        matches.push({type:'時代', title:era.name, desc:era.subtitle, action:()=>{switchView('eras');openEraDetail(idx);}});
+      }
+      // Search events
+      era.events.forEach(ev => {
+        if (ev.title.includes(q) || ev.desc.includes(q)) {
+          matches.push({type:'事件', title:ev.title, desc:`${ev.year} - ${era.name}`, action:()=>{switchView('eras');openEraDetail(idx);}});
+        }
+      });
+      // Search people
+      era.people.forEach(p => {
+        if (p.name.includes(q) || p.role.includes(q) || p.desc.includes(q)) {
+          matches.push({type:'人物', title:p.name, desc:`${p.role} - ${era.name}`, action:()=>{openPersonDetail(p.name, idx);}});
+        }
+      });
+    });
+
+    // Search glossary
+    GLOSSARY.forEach(g => {
+      if (g.term.includes(q) || g.reading.includes(q) || g.def.includes(q)) {
+        matches.push({type:'用語', title:g.term, desc:g.def.substring(0,50)+'...', action:()=>{switchView('glossary');}});
+      }
+    });
+
+    if (matches.length === 0) {
+      results.innerHTML = '<div class="search-result-item"><span style="color:var(--text3)">結果が見つかりません</span></div>';
+    } else {
+      results.innerHTML = matches.slice(0, 15).map((m, i) => `
+        <div class="search-result-item" data-idx="${i}">
+          <div class="sr-type">${m.type}</div>
+          <div class="sr-title">${m.title}</div>
+          <div class="sr-desc">${m.desc}</div>
+        </div>
+      `).join('');
+      results.querySelectorAll('.search-result-item').forEach((item, i) => {
+        item.addEventListener('click', () => {
+          matches[i].action();
+          results.classList.remove('open');
+          input.value = '';
+        });
+      });
+    }
+    results.classList.add('open');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.header-search')) results.classList.remove('open');
+  });
+}
+
+// ===== KEYBOARD =====
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeDetail();
+    document.getElementById('globalSearch').blur();
+    document.getElementById('searchResults').classList.remove('open');
+  }
+  if (e.key === '/' && !e.target.closest('input')) {
+    e.preventDefault();
+    document.getElementById('globalSearch').focus();
+  }
+});
+
+// ===== SCROLL TO TOP =====
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scrollTop');
+  if (window.scrollY > 300) btn.classList.add('show');
+  else btn.classList.remove('show');
+}, {passive: true});
+</script>
+
+</body>
+</html>
